@@ -15,12 +15,16 @@ public class PlayerMovement : MonoBehaviour {
 	void Update ()
     {
         CheckClickOnScreen();
+        Move();
+    }
 
+    void Move()
+    {
         if (goingToTargetpos)
         {
             if (transform.position == targetPos)
             {
-                goingToTargetpos = false;                
+                goingToTargetpos = false;
             }
             else
             {
@@ -28,8 +32,8 @@ public class PlayerMovement : MonoBehaviour {
 
                 if (playerInfo.facingRight)
                 {
-                    playerInfo.ChangeState(PlayerInfo.PlayerState.isMoving);                    
-                }                
+                    playerInfo.ChangeState(PlayerInfo.PlayerState.Moving);
+                }
             }
         }
         else
@@ -40,7 +44,7 @@ public class PlayerMovement : MonoBehaviour {
                 Flip();
             }
         }
-	}
+    }
 
     void CheckClickOnScreen()
     {

@@ -27,7 +27,7 @@ public class ScenarioParallax : MonoBehaviour {
 	void Update ()
     {
 
-        float xOffset = moveWithPlayer? ((playerInfo.state == PlayerInfo.PlayerState.isMoving && playerInfo.facingRight)? speedFactor/divFactor * Time.deltaTime : 0) : speedFactor/divFactor * Time.deltaTime;
+        float xOffset = moveWithPlayer? ((playerInfo.state == PlayerInfo.PlayerState.Moving && playerInfo.facingRight)? speedFactor/divFactor * Time.deltaTime : 0) : speedFactor/divFactor * Time.deltaTime;
 
         bgMaterial.mainTextureOffset = new Vector2(bgMaterial.mainTextureOffset.x + xOffset, bgMaterial.mainTextureOffset.y);
 

@@ -4,26 +4,34 @@ public class PlayerInfo : MonoBehaviour{
 
     public enum PlayerState
     {
-        isMoving,
-        isFighting,
-        isFightingBoss,
-        isDead,
+        Moving,
+        Fighting,        
+        Dead
     }
 
-    #region MovementInfo
     public float speed;    
     public bool facingRight = true;
     public float distanceWalked = 0;
-    #endregion MovementInfo    
 
     public int goldEarned = 0;
+    public int maxEnemiesOnTown;
+    public int enemiesInTown = 0;
 
     public PlayerState state;   
 
     void Start()
     {
-        state = PlayerState.isMoving;
+        EventManager.onEnemyDeath += EnemyDied;
+        EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;
+        state = PlayerState.Moving;
     }
+
+    void OnDisable()
+    {
+        EventManager.onEnemyDeath -= EnemyDied;
+        EventManager.onEnemyArrivedInTown -= EnemyArrivedInTown;
+    }
+
 
     void Update()
     {
@@ -46,6 +54,17 @@ public class PlayerInfo : MonoBehaviour{
     void EarnGold(int amount)
     {
         goldEarned += amount;
+    }
+
+    void EnemyDied(BaseEnemy enemy)
+    {
+        EarnGold(enemy.goldValue);
+    }
+
+    void EnemyArrivedInTown(BaseEnemy enemy)
+    {
+        print(gameObject.name + ": Enemy arrived in town");
+        enemiesInTown++;
     }
 
 }
