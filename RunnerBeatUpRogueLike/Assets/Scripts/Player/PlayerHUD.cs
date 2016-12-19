@@ -16,6 +16,6 @@ public class PlayerHUD : MonoBehaviour {
 	void Update ()
     {
         distanceText.text = playerInfo.distanceWalked.ToString("F0") + " meters";
-        goldAmount.text = playerInfo.goldEarned.ToString() + " gold";
+        goldAmount.text = playerInfo.goldEarned.ToString() + " g";
     }
 }
