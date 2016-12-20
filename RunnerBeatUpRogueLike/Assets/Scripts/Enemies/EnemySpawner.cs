@@ -9,17 +9,16 @@ public class EnemySpawner : MonoBehaviour {
     
     public float minSpawnTime = 2;
     public float maxSpawnTime = 6;
-
-    float lastSpawnTime;
+    public int maxSpawnQty = 2;
+    
     float timeToNextSpawn = 0;
     bool isSpawning = false;
-    int spawnMaxQuantity = 2;
+    
     public int currentEnemyQty = 0;
 
 	// Use this for initialization
 	void Start ()
-    {
-        lastSpawnTime = Time.time;
+    {        
         EventManager.onEnemyDeath += EnemyDied;
         EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;
     }
@@ -33,14 +32,15 @@ public class EnemySpawner : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
-	    if(currentEnemyQty < spawnMaxQuantity)
-        {
-            if(timeToNextSpawn == 0)
+	    if(currentEnemyQty < maxSpawnQty)
+        {    
+            if(timeToNextSpawn == 0 && !isSpawning)
             {
                 timeToNextSpawn = Random.Range(minSpawnTime, maxSpawnTime);                
                 Invoke("SpawnEnemy", timeToNextSpawn);
-                currentEnemyQty++;
-                timeToNextSpawn = 0;
+                //print("time to spawn " + timeToNextSpawn);
+                currentEnemyQty++;                
+                isSpawning = true;
             }
         }
 	}
@@ -48,6 +48,8 @@ public class EnemySpawner : MonoBehaviour {
     void SpawnEnemy()
     {
         Instantiate(enemyList[Random.Range(0, enemyList.Count)], spawnPoints[Random.Range(0, spawnPoints.Count)].position, Quaternion.identity);
+        isSpawning = false;
+        timeToNextSpawn = 0;
     }
 
     void EnemyDied(BaseEnemy enemy)
@@ -57,7 +59,7 @@ public class EnemySpawner : MonoBehaviour {
 
     void EnemyArrivedInTown(BaseEnemy enemy)
     {
-        print(gameObject.name + ": Enemy arrived in town");
+        //print(gameObject.name + ": Enemy arrived in town");
         currentEnemyQty--;
     }
 }

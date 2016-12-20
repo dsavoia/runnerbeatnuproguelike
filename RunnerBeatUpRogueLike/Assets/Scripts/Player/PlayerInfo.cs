@@ -63,7 +63,7 @@ public class PlayerInfo : MonoBehaviour{
 
     void EnemyArrivedInTown(BaseEnemy enemy)
     {
-        print(gameObject.name + ": Enemy arrived in town");
+        //print(gameObject.name + ": Enemy arrived in town");
         enemiesInTown++;
     }
 
