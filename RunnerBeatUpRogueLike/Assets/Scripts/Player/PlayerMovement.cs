@@ -5,8 +5,10 @@ public class PlayerMovement : MonoBehaviour {
 
     PlayerInfo playerInfo;
     Vector3 targetPos;    
-    bool goingToTargetpos;    
-    
+    bool goingToTargetpos;
+    public Transform graphics;
+
+
     void Start ()
     {
         playerInfo = GetComponent<PlayerInfo>();
@@ -16,6 +18,11 @@ public class PlayerMovement : MonoBehaviour {
     {
         CheckClickOnScreen();
         Move();
+    }
+
+    void LateUpdate()
+    {
+        graphics.GetComponent<SpriteRenderer>().sortingOrder = Mathf.RoundToInt(transform.position.y * 100f) * -1;
     }
 
     void Move()
@@ -85,9 +92,9 @@ public class PlayerMovement : MonoBehaviour {
 
     void Flip()
     {
-        Vector3 localScale = transform.localScale;
+        Vector3 localScale = graphics.localScale;
         localScale.x *= -1;
-        transform.localScale = localScale;
+        graphics.localScale = localScale;
     }
 
 }

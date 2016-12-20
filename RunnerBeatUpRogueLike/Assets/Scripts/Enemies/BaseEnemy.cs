@@ -7,75 +7,106 @@ public class BaseEnemy : MonoBehaviour {
     {
         Moving,
         MovingToPlayer,
-        Fighting,
+        FightingAtk,
+        FightingCoolDown,
         Dead   
     }
 
+    public Transform graphics;
+    bool facingLeft = true;
+
+    #region attributes vars
     public int hp;
     public int attackDamage;
     public int defense;
-    public float attackRate; //attacks per second
+    public float attackRate;
+    public float attackRange;
     public float Speed;
     public int goldValue;
+    #endregion
 
+    #region viewArea vars
     public float viewDistance;
     public LayerMask viewLayer;   
     public float dstBetweenRays = 0.2f;
     public bool horizontalView = true;
     public bool verticalView;
-
     protected int horizontalRayCount;
     protected int verticalRayCount;
     protected float horizontalRaySpacing;
     protected float verticalRaySpacing;
     public Vector2 boundsOffset;
+    #endregion
 
-    BoxCollider2D boxCollider2D;
-    Bounds bounds;
+
+    GameObject player = null;
+    BoxCollider2D enemyBoxCollider2D;
+    BoxCollider2D playerBoxCollider2D;
+    Bounds enemyBounds;
+    Bounds playerBounds;
 
     BaseEnemyState state;
 
-    
-
-    // Use this for initialization
-    void Start ()
+    protected virtual void Start ()
     {
         state = BaseEnemyState.Moving;
-        boxCollider2D = GetComponent<BoxCollider2D>();
-        bounds = boxCollider2D.bounds;
+        enemyBoxCollider2D = GetComponent<BoxCollider2D>();
+        enemyBounds = enemyBoxCollider2D.bounds;
         CalculateRaySpacing();
     }
-	
-	// Update is called once per frame
-	void Update ()
-    {
-        bounds = boxCollider2D.bounds;
-        bounds.Expand(boundsOffset);
-        DrawRect(); // debug Rect
 
-        if (state == BaseEnemyState.Moving)
+    protected virtual void Update ()
+    {
+        enemyBounds = enemyBoxCollider2D.bounds;
+        enemyBounds.Expand(boundsOffset);
+        //DrawBoundsRect(); // debug Rect
+
+        switch (state)
         {
-            Move();
-            LookForPlayer();
+            case (BaseEnemyState.Moving):
+                Move(new Vector2(transform.position.x + Vector2.left.x, transform.position.y));
+                LookForPlayer();
+            break;
+            case (BaseEnemyState.MovingToPlayer):
+                MoveToPlayer();
+            break;
+            case (BaseEnemyState.FightingAtk):
+                Fight();
+            break;
         }       
 	}
 
-    protected virtual void Move()
+    void LateUpdate()
     {
-        transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x + Vector2.left.x, transform.position.y), Speed * Time.deltaTime);
+        graphics.GetComponent<SpriteRenderer>().sortingOrder = Mathf.RoundToInt(transform.position.y * 100f) * -1;
+    }
+
+    protected virtual void Move(Vector2 target)
+    {
+        transform.position = Vector2.MoveTowards(transform.position, target, Speed * Time.deltaTime);
+    }
+
+    protected virtual void MoveToPlayer()
+    {   
+        LookAtPlayer();
+        Move(playerBounds.center);
+
+        Debug.DrawLine(enemyBounds.center, playerBounds.center, Color.yellow);
+        RaycastHit2D hit = Physics2D.Linecast(enemyBounds.center, playerBounds.center, viewLayer);
+        if (hit.distance <= attackRange)
+        {   
+            state = BaseEnemyState.FightingAtk;
+        }               
     }
 
     protected virtual void LookForPlayer()
     {
-        //print(horizontalRayCount);
-
         if (horizontalView)
         {
             for (int i = 0; i < horizontalRayCount; i++)
             {
-                Vector2 rayOrigin = bounds.max;
-                rayOrigin += Vector2.down * (horizontalRaySpacing * i);
-                //print("rayOrigin " + rayOrigin );
+                Vector2 rayOrigin = enemyBounds.max;
+                rayOrigin += Vector2.down * (horizontalRaySpacing * i);               
 
                 Debug.DrawRay(rayOrigin, Mathf.Sign(transform.localScale.x) * Vector2.left * viewDistance, Color.red);
 
@@ -86,6 +117,9 @@ public class BaseEnemy : MonoBehaviour {
                     if (hit.collider.tag == "Player")
                     {
                         state = BaseEnemyState.MovingToPlayer;
+                        player = hit.collider.gameObject;
+                        playerBoxCollider2D = hit.collider.GetComponent<BoxCollider2D>();
+                        MoveToPlayer();
                         return;
                     }
                 }
@@ -96,9 +130,8 @@ public class BaseEnemy : MonoBehaviour {
         {
             for (int i = 0; i < verticalRayCount; i++)
             {
-                Vector2 rayOrigin = bounds.max;
-                rayOrigin += Vector2.left * (verticalRaySpacing * i);
-                //print("rayOrigin " + rayOrigin );
+                Vector2 rayOrigin = enemyBounds.max;
+                rayOrigin += Vector2.left * (verticalRaySpacing * i);            
 
                 Debug.DrawRay(rayOrigin, Vector2.down * viewDistance, Color.red);
 
@@ -108,6 +141,10 @@ public class BaseEnemy : MonoBehaviour {
                 {
                     if (hit.collider.tag == "Player")
                     {
+                        state = BaseEnemyState.MovingToPlayer;
+                        player = hit.collider.gameObject;
+                        playerBoxCollider2D = hit.collider.GetComponent<BoxCollider2D>();
+                        MoveToPlayer();
                         return;
                     }
                 }
@@ -115,9 +152,18 @@ public class BaseEnemy : MonoBehaviour {
         }
     }
 
-    protected virtual void Attack(GameObject target)
+    protected virtual void Fight()
     {
+        Debug.DrawLine(enemyBounds.center, player.transform.position, Color.yellow);
+        RaycastHit2D hit = Physics2D.Linecast(enemyBounds.center, player.transform.position, viewLayer);
 
+        LookAtPlayer();
+
+        if (hit.distance > attackRange)
+        {
+            state = BaseEnemyState.MovingToPlayer;
+            return;
+        }
     }
 
     protected virtual void TakeDamage(int damage)
@@ -134,33 +180,57 @@ public class BaseEnemy : MonoBehaviour {
         EventManager.OnEnemyDeath(this);
         Destroy(gameObject);
         ///TODO: Death animation
-    }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-
-    }
+    }    
 
     protected void CalculateRaySpacing()
     {
-        bounds.Expand(boundsOffset);
-        float boundsWidth = bounds.size.x;
-        float boundsHeight = bounds.size.y;
+        enemyBounds.Expand(boundsOffset);
+        float boundsWidth = enemyBounds.size.x;
+        float boundsHeight = enemyBounds.size.y;
 
         horizontalRayCount = Mathf.RoundToInt(boundsHeight / dstBetweenRays);
         verticalRayCount = Mathf.RoundToInt(boundsWidth / dstBetweenRays);
 
-        horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
-        verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
+        horizontalRaySpacing = enemyBounds.size.y / (horizontalRayCount - 1);
+        verticalRaySpacing = enemyBounds.size.x / (verticalRayCount - 1);
+    }
+
+    void LookAtPlayer()
+    {
+        playerBounds = playerBoxCollider2D.bounds;
+
+        if (player.transform.position.x > transform.position.x)
+        {
+            if (facingLeft)
+            {
+                Flip();
+                facingLeft = false;
+            }
+        }
+        else
+        {
+            if (!facingLeft)
+            {
+                Flip();
+                facingLeft = true;
+            }
+        }
+    }
+
+    void Flip()
+    {
+        Vector3 localScale = graphics.localScale;
+        localScale.x *= -1;
+        graphics.localScale = localScale;
     }
 
     //Debug function
-    void DrawRect()
+    void DrawBoundsRect()
     {
-        Vector2 bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
-        Vector2 bottomRight = new Vector2(bounds.max.x, bounds.min.y);
-        Vector2 topLeft = new Vector2(bounds.min.x, bounds.max.y);
-        Vector2 topRight = new Vector2(bounds.max.x, bounds.max.y);
+        Vector2 bottomLeft = new Vector2(enemyBounds.min.x, enemyBounds.min.y);
+        Vector2 bottomRight = new Vector2(enemyBounds.max.x, enemyBounds.min.y);
+        Vector2 topLeft = new Vector2(enemyBounds.min.x, enemyBounds.max.y);
+        Vector2 topRight = new Vector2(enemyBounds.max.x, enemyBounds.max.y);
 
         Debug.DrawLine(bottomLeft, topLeft, Color.blue);
         Debug.DrawLine(topLeft, topRight, Color.blue);

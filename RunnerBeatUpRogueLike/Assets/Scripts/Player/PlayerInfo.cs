@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class PlayerInfo : MonoBehaviour{
 
@@ -22,7 +23,7 @@ public class PlayerInfo : MonoBehaviour{
     void Start()
     {
         EventManager.onEnemyDeath += EnemyDied;
-        EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;
+        EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;        
         state = PlayerState.Moving;
     }
 
