@@ -19,10 +19,18 @@ public class PlayerMovement : MonoBehaviour {
     {
         switch (playerInfo.state)
         {
-            case (PlayerInfo.PlayerState.MovingToPosition):        
+            case (PlayerInfo.PlayerState.MovingToPosition):
+            case (PlayerInfo.PlayerState.MovingToTown):
                 if (transform.position == playerInfo.targetPos)
                 {
-                    playerInfo.SetState(PlayerInfo.PlayerState.MovingForward);
+                    if(playerInfo.state == PlayerInfo.PlayerState.MovingToPosition)
+                    {
+                        playerInfo.SetState(PlayerInfo.PlayerState.MovingForward);
+                    }
+                    else
+                    {
+                        ///TODO: Load town scene
+                    }                    
                 }
                 else
                 {

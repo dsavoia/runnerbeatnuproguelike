@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerStatus : MonoBehaviour {
+public class PlayerActions : MonoBehaviour {
 
     PlayerInfo playerInfo;
 
@@ -11,7 +11,7 @@ public class PlayerStatus : MonoBehaviour {
         playerInfo = GetComponent<PlayerInfo>();
 	}
 
-    void TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
         playerInfo.currentHp -= damage;
         if (playerInfo.currentHp <= 0)
@@ -20,10 +20,9 @@ public class PlayerStatus : MonoBehaviour {
         }
     }
 
-    protected virtual void Die()
+    void Die()
     {
         playerInfo.SetState(PlayerInfo.PlayerState.Dead);
-        ///TODO: Go back to town
+        EventManager.OnPlayerDeath();
     }
-
 }

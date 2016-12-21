@@ -8,7 +8,9 @@ public class PlayerInfo : MonoBehaviour{
         MovingForward,
         MovingToPosition,        
         MovingToTarget,
-        Fighting,        
+        MovingToTown,
+        Fighting,
+        EnemiesAttackingTown,        
         Dead
     }
 
@@ -25,7 +27,9 @@ public class PlayerInfo : MonoBehaviour{
     public int maxEnemiesOnTown;
     public int enemiesInTown = 0;
 
-    public PlayerState state;   
+    public Transform townPos;
+
+    public PlayerState state; 
 
     void Start()
     {
@@ -45,6 +49,7 @@ public class PlayerInfo : MonoBehaviour{
     void Update()
     {
         UpdateInfo();
+        CheckGoBackToTown();
     }
 
     public void SetState(PlayerState newState)
@@ -74,6 +79,33 @@ public class PlayerInfo : MonoBehaviour{
     {
         //print(gameObject.name + ": Enemy arrived in town");
         enemiesInTown++;
+        if(enemiesInTown >= maxEnemiesOnTown)
+        {
+            EventManager.OnEnemiesAttakingTown();
+            state = PlayerState.EnemiesAttackingTown;
+        }
+    }
+
+    void CheckGoBackToTown()
+    {
+        if (state == PlayerState.Dead)
+        {
+            Invoke("GoBackToTown", 3);
+            return;
+        }
+
+        if (state == PlayerState.EnemiesAttackingTown)
+        {
+            Invoke("GoBackToTown", 1.5f);
+            return;
+        }
+
+    }
+
+    void GoBackToTown()
+    {
+        targetPos = townPos.position;
+        state = PlayerState.MovingToTown;
     }
 
 }

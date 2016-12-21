@@ -9,6 +9,12 @@ public class EventManager : MonoBehaviour
     public delegate void EnemyArrivedInTown(BaseEnemy enemy);
     public static event EnemyArrivedInTown onEnemyArrivedInTown;
 
+    public delegate void EnemiesAttakingTown();
+    public static event EnemiesAttakingTown onEnemiesAttakingTown;
+
+    public delegate void PlayerDied();
+    public static event PlayerDied onPlayerDeath;
+
     public static void OnEnemyDeath(BaseEnemy enemy)
     {
         if(onEnemyDeath != null)
@@ -24,4 +30,22 @@ public class EventManager : MonoBehaviour
             onEnemyArrivedInTown(enemy);
         }
     }
+
+    public static void OnEnemiesAttakingTown()
+    {
+        if (onEnemiesAttakingTown != null)
+        {
+            onEnemiesAttakingTown();
+        }
+    }
+
+    public static void OnPlayerDeath()
+    {
+        if (onPlayerDeath != null)
+        {
+            onPlayerDeath();
+        }
+    }
+
+    
 }

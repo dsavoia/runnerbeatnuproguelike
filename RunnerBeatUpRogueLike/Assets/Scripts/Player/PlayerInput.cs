@@ -18,25 +18,28 @@ public class PlayerInput : MonoBehaviour {
 
     void CheckClickOnScreen()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (playerInfo.state != PlayerInfo.PlayerState.Dead)
         {
-            Vector3 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hitInfo = Physics2D.Raycast(new Vector2(clickPos.x, clickPos.y), Vector2.zero, 0);
-
-            if (hitInfo)
+            if (Input.GetMouseButtonDown(0))
             {
-                //print("Clicked on: " + hitInfo.collider.gameObject.name);
+                Vector3 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                RaycastHit2D hitInfo = Physics2D.Raycast(new Vector2(clickPos.x, clickPos.y), Vector2.zero, 0);
 
-                if (hitInfo.collider.gameObject.tag == "Path")
+                if (hitInfo)
                 {
-                    playerInfo.targetPos = hitInfo.point;
-                    playerInfo.SetState(PlayerInfo.PlayerState.MovingToPosition);
-                }
+                    //print("Clicked on: " + hitInfo.collider.gameObject.name);
 
-                if(hitInfo.collider.gameObject.tag == "Enemy")
-                {
-                    playerInfo.targetPos = hitInfo.point;
-                    playerInfo.SetState(PlayerInfo.PlayerState.MovingToTarget);
+                    if (hitInfo.collider.gameObject.tag == "Path")
+                    {
+                        playerInfo.targetPos = hitInfo.point;
+                        playerInfo.SetState(PlayerInfo.PlayerState.MovingToPosition);
+                    }
+
+                    if (hitInfo.collider.gameObject.tag == "Enemy")
+                    {
+                        playerInfo.targetPos = hitInfo.point;
+                        playerInfo.SetState(PlayerInfo.PlayerState.MovingToTarget);
+                    }
                 }
             }
         }

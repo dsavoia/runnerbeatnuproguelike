@@ -13,6 +13,7 @@ public class EnemySpawner : MonoBehaviour {
     
     float timeToNextSpawn = 0;
     bool isSpawning = false;
+    public PlayerInfo playerInfo;
     
     public int currentEnemyQty = 0;
 
@@ -32,17 +33,27 @@ public class EnemySpawner : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
-	    if(currentEnemyQty < maxSpawnQty)
-        {    
-            if(timeToNextSpawn == 0 && !isSpawning)
-            {
-                timeToNextSpawn = Random.Range(minSpawnTime, maxSpawnTime);                
-                Invoke("SpawnEnemy", timeToNextSpawn);
-                //print("time to spawn " + timeToNextSpawn);
-                currentEnemyQty++;                
-                isSpawning = true;
-            }
+        switch (playerInfo.state)
+        {
+            case PlayerInfo.PlayerState.Dead:
+            case PlayerInfo.PlayerState.MovingToTown:
+                CancelInvoke("SpawnEnemy");
+            break;
+            default:                
+                    if (currentEnemyQty < maxSpawnQty)
+                    {
+                        if (timeToNextSpawn == 0 && !isSpawning)
+                        {
+                            timeToNextSpawn = Random.Range(minSpawnTime, maxSpawnTime);
+                            Invoke("SpawnEnemy", timeToNextSpawn);
+                            //print("time to spawn " + timeToNextSpawn);
+                            currentEnemyQty++;
+                            isSpawning = true;
+                        }
+                    }               
+            break;
         }
+        
 	}
 
     void SpawnEnemy()
@@ -61,5 +72,5 @@ public class EnemySpawner : MonoBehaviour {
     {
         //print(gameObject.name + ": Enemy arrived in town");
         currentEnemyQty--;
-    }
+    }    
 }
