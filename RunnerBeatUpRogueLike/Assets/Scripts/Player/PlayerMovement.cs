@@ -4,10 +4,6 @@ using System.Collections;
 public class PlayerMovement : MonoBehaviour {
 
     PlayerInfo playerInfo;
-    Vector3 targetPos;    
-    bool goingToTargetpos;
-    public Transform graphics;
-
 
     void Start ()
     {
@@ -15,86 +11,46 @@ public class PlayerMovement : MonoBehaviour {
     }
 	
 	void Update ()
-    {
-        CheckClickOnScreen();
+    {        
         Move();
-    }
-
-    void LateUpdate()
-    {
-        graphics.GetComponent<SpriteRenderer>().sortingOrder = Mathf.RoundToInt(transform.position.y * 100f) * -1;
     }
 
     void Move()
     {
-        if (goingToTargetpos)
+        switch (playerInfo.state)
         {
-            if (transform.position == targetPos)
-            {
-                goingToTargetpos = false;
-            }
-            else
-            {
-                transform.position = Vector3.MoveTowards(transform.position, targetPos, playerInfo.speed * Time.deltaTime);
-
-                if (playerInfo.facingRight)
+            case (PlayerInfo.PlayerState.MovingToPosition):        
+                if (transform.position == playerInfo.targetPos)
                 {
-                    playerInfo.ChangeState(PlayerInfo.PlayerState.Moving);
+                    playerInfo.SetState(PlayerInfo.PlayerState.MovingForward);
                 }
-            }
-        }
-        else
-        {
-            if (!playerInfo.facingRight)
-            {
-                playerInfo.facingRight = true;
-                Flip();
-            }
-        }
-    }
-
-    void CheckClickOnScreen()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector3 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hitInfo = Physics2D.Raycast(new Vector2(clickPos.x, clickPos.y), Vector2.zero, 0);
-
-            if (hitInfo)
-            {
-                //print("Clicked on: " + hitInfo.collider.gameObject.name);
-
-                if (hitInfo.collider.gameObject.tag == "Path")
+                else
                 {
-                    targetPos = hitInfo.point;
-                    if (hitInfo.point.x >= transform.position.x)
+                    if (playerInfo.targetPos.x >= transform.position.x)
                     {
                         if (!playerInfo.facingRight)
                         {
                             playerInfo.facingRight = true;
-                            Flip();
-                        }                               
+                        }
                     }
                     else
                     {
                         if (playerInfo.facingRight)
                         {
                             playerInfo.facingRight = false;
-                            Flip();
                         }
                     }
 
-                    goingToTargetpos = true;
+                    transform.position = Vector3.MoveTowards(transform.position, playerInfo.targetPos, playerInfo.speed * Time.deltaTime);
                 }
-            }
+            break;
+
+            case (PlayerInfo.PlayerState.MovingForward):
+                if (!playerInfo.facingRight)
+                {
+                    playerInfo.facingRight = true;                
+                }                
+            break;
         }
     }
-
-    void Flip()
-    {
-        Vector3 localScale = graphics.localScale;
-        localScale.x *= -1;
-        graphics.localScale = localScale;
-    }
-
 }

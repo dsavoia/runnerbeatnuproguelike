@@ -2,14 +2,21 @@
 using System.Collections.Generic;
 
 public class PlayerInfo : MonoBehaviour{
-
+    
     public enum PlayerState
     {
-        Moving,
+        MovingForward,
+        MovingToPosition,        
+        MovingToTarget,
         Fighting,        
         Dead
     }
 
+    public int maxHp;
+    [HideInInspector]public int currentHp;
+    
+    public Vector3 targetPos;
+    //public bool goingToTargetpos;
     public float speed;    
     public bool facingRight = true;
     public float distanceWalked = 0;
@@ -23,8 +30,9 @@ public class PlayerInfo : MonoBehaviour{
     void Start()
     {
         EventManager.onEnemyDeath += EnemyDied;
-        EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;        
-        state = PlayerState.Moving;
+        EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;
+        currentHp = maxHp;
+        state = PlayerState.MovingForward;
     }
 
     void OnDisable()
@@ -39,14 +47,14 @@ public class PlayerInfo : MonoBehaviour{
         UpdateInfo();
     }
 
-    public void ChangeState(PlayerState newState)
+    public void SetState(PlayerState newState)
     {
         state = newState;
     }
 
     void UpdateInfo()
     {
-        if (facingRight)
+        if (state == PlayerState.MovingForward)
         {
             distanceWalked += Time.deltaTime;
         }

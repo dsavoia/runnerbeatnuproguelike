@@ -79,7 +79,7 @@ public class BaseEnemy : MonoBehaviour {
     void LateUpdate()
     {
         graphics.GetComponent<SpriteRenderer>().sortingOrder = Mathf.RoundToInt(transform.position.y * 100f) * -1;
-    }
+    }  
 
     protected virtual void Move(Vector2 target)
     {
@@ -164,6 +164,8 @@ public class BaseEnemy : MonoBehaviour {
             state = BaseEnemyState.MovingToPlayer;
             return;
         }
+
+
     }
 
     protected virtual void TakeDamage(int damage)
@@ -182,7 +184,7 @@ public class BaseEnemy : MonoBehaviour {
         ///TODO: Death animation
     }    
 
-    protected void CalculateRaySpacing()
+    void CalculateRaySpacing()
     {
         enemyBounds.Expand(boundsOffset);
         float boundsWidth = enemyBounds.size.x;
