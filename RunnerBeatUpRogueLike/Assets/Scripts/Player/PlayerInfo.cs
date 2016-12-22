@@ -15,10 +15,11 @@ public class PlayerInfo : MonoBehaviour{
     }
 
     public int maxHp;
-    [HideInInspector]public int currentHp;
-    
+    [HideInInspector] public int currentHp;
+    [HideInInspector] public BaseEnemy focusedEnemy = null;
+
     public Vector3 targetPos;
-    //public bool goingToTargetpos;
+    public float attackRange;
     public float speed;    
     public bool facingRight = true;
     public float distanceWalked = 0;
@@ -106,6 +107,11 @@ public class PlayerInfo : MonoBehaviour{
     {
         targetPos = townPos.position;
         state = PlayerState.MovingToTown;
+    }
+    
+    public void LoadTown()
+    {
+        ///TODO: Load town
     }
 
 }

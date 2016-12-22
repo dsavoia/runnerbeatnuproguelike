@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PlayerInput : MonoBehaviour {
 
-    PlayerInfo playerInfo;
+    PlayerInfo playerInfo;    
 
     void Start()
     {
@@ -31,12 +31,26 @@ public class PlayerInput : MonoBehaviour {
 
                     if (hitInfo.collider.gameObject.tag == "Path")
                     {
+                        if (playerInfo.focusedEnemy != null)
+                        {
+                            playerInfo.focusedEnemy.SetFocus(false);
+                            playerInfo.focusedEnemy = null;
+                        }
+
                         playerInfo.targetPos = hitInfo.point;
                         playerInfo.SetState(PlayerInfo.PlayerState.MovingToPosition);
                     }
 
                     if (hitInfo.collider.gameObject.tag == "Enemy")
                     {
+                        if(playerInfo.focusedEnemy != null)
+                        {
+                            playerInfo.focusedEnemy.SetFocus(false);
+                        }
+
+                        playerInfo.focusedEnemy = hitInfo.collider.GetComponent<BaseEnemy>();
+                        playerInfo.focusedEnemy.SetFocus(true);
+
                         playerInfo.targetPos = hitInfo.point;
                         playerInfo.SetState(PlayerInfo.PlayerState.MovingToTarget);
                     }

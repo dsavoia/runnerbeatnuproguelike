@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class BaseEnemy : MonoBehaviour {
 
@@ -14,12 +15,14 @@ public class BaseEnemy : MonoBehaviour {
     }
 
     public Transform graphics;
+    public GameObject selectionBorder;
     SpriteRenderer spriteRenderer;
     Color defaultColor;
     bool facingLeft = true;
 
     #region attributes vars
-    public int hp;
+    public int maxHp;
+    int currentHp;
     public int attackDamage;
     public int defense;
     public float attackCooldown;
@@ -42,6 +45,9 @@ public class BaseEnemy : MonoBehaviour {
     protected float verticalRaySpacing;
     public Vector2 boundsOffset;
     #endregion
+        
+    public GameObject healthBarParent;
+    public Image healthBar;
 
     int celebrationDir = 1;
 
@@ -59,6 +65,8 @@ public class BaseEnemy : MonoBehaviour {
         EventManager.onPlayerDeath += PlayerDied;
         EventManager.onEnemyArrivedInTown += AllyArrivedInTown;
         EventManager.onEnemiesAttakingTown += PlayerDied;
+
+        currentHp = maxHp;
 
         spriteRenderer = graphics.gameObject.GetComponent<SpriteRenderer>();
         defaultColor = spriteRenderer.color;
@@ -79,7 +87,7 @@ public class BaseEnemy : MonoBehaviour {
     {
         enemyBounds = enemyBoxCollider2D.bounds;
         enemyBounds.Expand(boundsOffset);
-        DrawBoundsRect(); // debug Rect
+        //DrawBoundsRect(); // debug Rect  
 
         switch (state)
         {
@@ -95,6 +103,7 @@ public class BaseEnemy : MonoBehaviour {
             break;
             case (BaseEnemyState.PlayerDied):
                 state = BaseEnemyState.Celebrating;
+                SetFocus(false);
                 Celebrate();
             break;
 
@@ -103,7 +112,9 @@ public class BaseEnemy : MonoBehaviour {
 
     void LateUpdate()
     {
-        graphics.GetComponent<SpriteRenderer>().sortingOrder = Mathf.RoundToInt(transform.position.y * 100f) * -1;
+        int sortingOrder = Mathf.RoundToInt(transform.position.y * 100f) * -1;
+        graphics.GetComponent<SpriteRenderer>().sortingOrder = sortingOrder;
+        selectionBorder.GetComponent<SpriteRenderer>().sortingOrder = sortingOrder;       
     }  
 
     protected virtual void Move(Vector2 target)
@@ -207,11 +218,31 @@ public class BaseEnemy : MonoBehaviour {
 
     protected virtual void TakeDamage(int damage)
     {
-        hp -= damage;
-        if(hp <= 0)
+        currentHp -= damage;
+        UpdateHealthBar();
+        if (currentHp <= 0)
         {
             Die();
         }
+    }
+
+    void UpdateHealthBar()
+    {
+        healthBar.fillAmount = (float)currentHp / (float)maxHp;
+    }
+
+    public void SetFocus(bool focus)
+    {   
+        if(focus)
+        {
+            healthBarParent.SetActive(true);
+            selectionBorder.SetActive(true);
+        }
+        else
+        {
+            healthBarParent.SetActive(false);
+            selectionBorder.SetActive(false);
+        }        
     }
 
     protected virtual void Die()
@@ -279,6 +310,11 @@ public class BaseEnemy : MonoBehaviour {
         Vector3 localScale = graphics.localScale;
         localScale.x *= -1;
         graphics.localScale = localScale;
+
+        localScale = selectionBorder.transform.localScale;
+        localScale.x *= -1;
+        selectionBorder.transform.localScale = localScale;
+        
     }
 
     //Debug function
