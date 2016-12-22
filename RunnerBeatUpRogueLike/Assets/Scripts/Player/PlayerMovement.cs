@@ -37,13 +37,17 @@ public class PlayerMovement : MonoBehaviour {
 
     protected virtual void MoveToTarget()
     {
-        transform.position = Vector3.MoveTowards(transform.position, playerInfo.targetPos, playerInfo.speed * Time.deltaTime);
+        Vector2 targetPosition = playerInfo.targetPos.GetComponent<BoxCollider2D>().bounds.center;
+
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, playerInfo.speed * Time.deltaTime);
         UpdateFacingDirection();
 
-        Debug.DrawLine(transform.position, playerInfo.targetPos, Color.yellow);
-        RaycastHit2D hit = Physics2D.Linecast(transform.position, playerInfo.targetPos, objectsLayer);
+        Debug.DrawLine(transform.position, playerInfo.targetPos.position, Color.blue);
+        RaycastHit2D hit = Physics2D.Linecast(transform.position, targetPosition, objectsLayer);
 
-        if (hit.distance <= playerInfo.attackRange)
+        print(hit.collider.name);
+
+        if (hit.distance <= playerInfo.basicAttackRange)
         {
             playerInfo.SetState(PlayerInfo.PlayerState.Fighting);
         }
@@ -53,7 +57,7 @@ public class PlayerMovement : MonoBehaviour {
     void Move()
     {
         
-        if (transform.position == playerInfo.targetPos)
+        if (transform.position == playerInfo.targetPos.position)
         {
             if(playerInfo.state == PlayerInfo.PlayerState.MovingToPosition)
             {
@@ -67,13 +71,13 @@ public class PlayerMovement : MonoBehaviour {
         else
         {
             UpdateFacingDirection();
-            transform.position = Vector3.MoveTowards(transform.position, playerInfo.targetPos, playerInfo.speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, playerInfo.targetPos.position, playerInfo.speed * Time.deltaTime);
         }        
     }
 
     void UpdateFacingDirection()
     {
-        if (playerInfo.targetPos.x >= transform.position.x)
+        if (playerInfo.targetPos.position.x >= transform.position.x)
         {
             if (!playerInfo.facingRight)
             {

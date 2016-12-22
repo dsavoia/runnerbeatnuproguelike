@@ -37,7 +37,7 @@ public class PlayerInput : MonoBehaviour {
                             playerInfo.focusedEnemy = null;
                         }
 
-                        playerInfo.targetPos = hitInfo.point;
+                        playerInfo.targetPos.position = hitInfo.point;
                         playerInfo.SetState(PlayerInfo.PlayerState.MovingToPosition);
                     }
 
@@ -51,7 +51,7 @@ public class PlayerInput : MonoBehaviour {
                         playerInfo.focusedEnemy = hitInfo.collider.GetComponent<BaseEnemy>();
                         playerInfo.focusedEnemy.SetFocus(true);
 
-                        playerInfo.targetPos = hitInfo.point;
+                        playerInfo.targetPos.position = hitInfo.point;
                         playerInfo.SetState(PlayerInfo.PlayerState.MovingToTarget);
                     }
                 }

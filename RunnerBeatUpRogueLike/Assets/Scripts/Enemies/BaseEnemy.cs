@@ -56,7 +56,8 @@ public class BaseEnemy : MonoBehaviour {
     BoxCollider2D playerBoxCollider2D;
     Bounds enemyBounds;
     Bounds playerBounds;
-    PlayerActions playerStatus;
+    PlayerActions playerActions;
+    PlayerInfo playerInfo;
 
     BaseEnemyState state;
 
@@ -183,8 +184,15 @@ public class BaseEnemy : MonoBehaviour {
     {
         state = BaseEnemyState.MovingToPlayer;
         player = hit.collider.gameObject;
-        playerStatus = player.GetComponent<PlayerActions>();
+        playerActions = player.GetComponent<PlayerActions>();
+        playerInfo = player.GetComponent<PlayerInfo>();
         playerBoxCollider2D = hit.collider.GetComponent<BoxCollider2D>();
+
+        if (!playerInfo.engagedEnemies.Contains(this))
+        {
+            playerInfo.engagedEnemies.Add(this);
+        }
+
         MoveToPlayer();
     }
 
@@ -203,7 +211,7 @@ public class BaseEnemy : MonoBehaviour {
 
         if(Time.time > lastAttack + attackCooldown)
         {
-            playerStatus.TakeDamage(attackDamage);
+            playerActions.TakeDamage(attackDamage);
             StartCoroutine(TempAttackAnim());
             lastAttack = Time.time;
         }
@@ -216,7 +224,7 @@ public class BaseEnemy : MonoBehaviour {
         spriteRenderer.color = defaultColor;
     }
 
-    protected virtual void TakeDamage(int damage)
+    public virtual void TakeDamage(int damage)
     {
         currentHp -= damage;
         UpdateHealthBar();
@@ -247,7 +255,7 @@ public class BaseEnemy : MonoBehaviour {
 
     protected virtual void Die()
     {
-        EventManager.OnEnemyDeath(this);
+        EventManager.OnEnemyDeath(this);        
         Destroy(gameObject);
         ///TODO: Death animation
     }

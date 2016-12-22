@@ -9,7 +9,7 @@ public class PlayerInfo : MonoBehaviour{
         MovingToPosition,        
         MovingToTarget,
         MovingToTown,
-        Fighting,
+        Fighting,        
         EnemiesAttackingTown,        
         Dead
     }
@@ -17,9 +17,15 @@ public class PlayerInfo : MonoBehaviour{
     public int maxHp;
     [HideInInspector] public int currentHp;
     [HideInInspector] public BaseEnemy focusedEnemy = null;
+    [HideInInspector] public float lastAttackTime;
+    [HideInInspector] public bool isBasicAttackOnCooldown = false;
+    [HideInInspector] public Transform targetPos;
+    [HideInInspector] public List<BaseEnemy> engagedEnemies;
 
-    public Vector3 targetPos;
-    public float attackRange;
+
+    public float basicAttackRange;
+    public float basicAttackCooldown;
+    public int basicAttackDamage;
     public float speed;    
     public bool facingRight = true;
     public float distanceWalked = 0;
@@ -37,6 +43,7 @@ public class PlayerInfo : MonoBehaviour{
         EventManager.onEnemyDeath += EnemyDied;
         EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;
         currentHp = maxHp;
+        engagedEnemies = new List<BaseEnemy>();
         state = PlayerState.MovingForward;
     }
 
@@ -49,6 +56,7 @@ public class PlayerInfo : MonoBehaviour{
 
     void Update()
     {
+        //CheckEngagedEnemies();
         UpdateInfo();
         CheckGoBackToTown();
     }
@@ -73,14 +81,36 @@ public class PlayerInfo : MonoBehaviour{
 
     void EnemyDied(BaseEnemy enemy)
     {
-        EarnGold(enemy.goldValue);
+        if(engagedEnemies.Contains(enemy))
+        {
+            engagedEnemies.Remove(enemy);
+        }
+
+        EarnGold(enemy.goldValue);        
+        
+        if (engagedEnemies.Count > 0)
+        {
+            focusedEnemy = engagedEnemies[0];
+            focusedEnemy.SetFocus(true);
+            targetPos.position = focusedEnemy.GetComponent<BoxCollider2D>().bounds.center;
+            state = PlayerState.MovingToTarget;
+            return;
+        }              
+        
+        state = PlayerState.MovingForward;
     }
 
     void EnemyArrivedInTown(BaseEnemy enemy)
     {
         //print(gameObject.name + ": Enemy arrived in town");
         enemiesInTown++;
-        if(enemiesInTown >= maxEnemiesOnTown)
+
+        if (engagedEnemies.Contains(enemy))
+        {
+            engagedEnemies.Remove(enemy);
+        }
+
+        if (enemiesInTown >= maxEnemiesOnTown)
         {
             EventManager.OnEnemiesAttakingTown();
             state = PlayerState.EnemiesAttackingTown;
@@ -105,7 +135,7 @@ public class PlayerInfo : MonoBehaviour{
 
     void GoBackToTown()
     {
-        targetPos = townPos.position;
+        targetPos.position = townPos.position;
         state = PlayerState.MovingToTown;
     }
     
