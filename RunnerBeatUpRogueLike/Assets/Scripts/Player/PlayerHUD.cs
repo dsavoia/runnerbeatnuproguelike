@@ -28,7 +28,7 @@ public class PlayerHUD : MonoBehaviour {
     {
         distanceText.text = playerInfo.distanceWalked.ToString("F0") + " meters";
         goldAmount.text = playerInfo.goldEarned.ToString() + " g";
-        enemiesOnTown.text = playerInfo.enemiesInTown.ToString() + " / " + playerInfo.maxEnemiesOnTown.ToString() + " enememies in town";
+        enemiesOnTown.text = playerInfo.enemiesInTown.ToString() + " / " + playerInfo.maxEnemiesInTown.ToString() + " enememies in town";
         healthQty.text = playerInfo.currentHp + " / " + playerInfo.maxHp;
     }
 

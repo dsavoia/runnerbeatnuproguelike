@@ -22,12 +22,14 @@ public class EnemySpawner : MonoBehaviour {
     {        
         EventManager.onEnemyDeath += EnemyDied;
         EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;
+        EventManager.onEnemiesAttakingTown += EnemiesAttackingTown;
     }
 
     void OnDisable()
     {
         EventManager.onEnemyDeath -= EnemyDied;
         EventManager.onEnemyArrivedInTown -= EnemyArrivedInTown;
+        EventManager.onEnemiesAttakingTown -= EnemiesAttackingTown;
     }
 
     // Update is called once per frame
@@ -72,5 +74,10 @@ public class EnemySpawner : MonoBehaviour {
     {
         //print(gameObject.name + ": Enemy arrived in town");
         currentEnemyQty--;
-    }    
+    }
+
+    void EnemiesAttackingTown()
+    {
+        CancelInvoke("SpawnEnemy");
+    }
 }

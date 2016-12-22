@@ -16,6 +16,7 @@ public class BaseEnemy : MonoBehaviour {
 
     public Transform graphics;
     public GameObject selectionBorder;
+    BoxCollider2D pathArea;
     SpriteRenderer spriteRenderer;
     Color defaultColor;
     bool facingLeft = true;
@@ -47,7 +48,7 @@ public class BaseEnemy : MonoBehaviour {
     #endregion
         
     public GameObject healthBarParent;
-    public Image healthBar;
+    public Image healthBar;    
 
     int celebrationDir = 1;
 
@@ -59,14 +60,15 @@ public class BaseEnemy : MonoBehaviour {
     PlayerActions playerActions;
     PlayerInfo playerInfo;
 
-    BaseEnemyState state;
+    BaseEnemyState state;   
 
     protected virtual void Start ()
     {
+        pathArea = GameObject.FindGameObjectWithTag("Path").GetComponent<BoxCollider2D>();
         EventManager.onPlayerDeath += PlayerDied;
         EventManager.onEnemyArrivedInTown += AllyArrivedInTown;
         EventManager.onEnemiesAttakingTown += PlayerDied;
-
+               
         currentHp = maxHp;
 
         spriteRenderer = graphics.gameObject.GetComponent<SpriteRenderer>();
@@ -120,6 +122,7 @@ public class BaseEnemy : MonoBehaviour {
 
     protected virtual void Move(Vector2 target)
     {
+        target.y = Mathf.Clamp(target.y, pathArea.bounds.min.y, pathArea.bounds.max.y);
         transform.position = Vector2.MoveTowards(transform.position, target, Speed * Time.deltaTime);
     }
 
@@ -187,12 +190,6 @@ public class BaseEnemy : MonoBehaviour {
         playerActions = player.GetComponent<PlayerActions>();
         playerInfo = player.GetComponent<PlayerInfo>();
         playerBoxCollider2D = hit.collider.GetComponent<BoxCollider2D>();
-
-        if (!playerInfo.engagedEnemies.Contains(this))
-        {
-            playerInfo.engagedEnemies.Add(this);
-        }
-
         MoveToPlayer();
     }
 
@@ -205,8 +202,19 @@ public class BaseEnemy : MonoBehaviour {
 
         if (hit.distance > attackRange)
         {
+            if (playerInfo.engagedEnemies.Contains(this))
+            {
+                playerInfo.engagedEnemies.Remove(this);
+            }
             state = BaseEnemyState.MovingToPlayer;
             return;
+        }
+        else
+        {
+            if (!playerInfo.engagedEnemies.Contains(this))
+            {
+                playerInfo.engagedEnemies.Add(this);
+            }
         }
 
         if(Time.time > lastAttack + attackCooldown)

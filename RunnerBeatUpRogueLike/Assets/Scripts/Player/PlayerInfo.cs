@@ -19,7 +19,8 @@ public class PlayerInfo : MonoBehaviour{
     [HideInInspector] public BaseEnemy focusedEnemy = null;
     [HideInInspector] public float lastAttackTime;
     [HideInInspector] public bool isBasicAttackOnCooldown = false;
-    [HideInInspector] public Transform targetPos;
+    [HideInInspector] public Vector3 targetPos;
+    [HideInInspector] public GameObject targetObject;
     [HideInInspector] public List<BaseEnemy> engagedEnemies;
 
 
@@ -31,15 +32,17 @@ public class PlayerInfo : MonoBehaviour{
     public float distanceWalked = 0;
 
     public int goldEarned = 0;
-    public int maxEnemiesOnTown;
+    public int maxEnemiesInTown;
     public int enemiesInTown = 0;
+
+    public LayerMask interactiveObjectsLayer;
 
     public Transform townPos;
 
     public PlayerState state; 
 
     void Start()
-    {
+    {        
         EventManager.onEnemyDeath += EnemyDied;
         EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;
         currentHp = maxHp;
@@ -86,13 +89,14 @@ public class PlayerInfo : MonoBehaviour{
             engagedEnemies.Remove(enemy);
         }
 
+        focusedEnemy = null;
         EarnGold(enemy.goldValue);        
         
         if (engagedEnemies.Count > 0)
         {
             focusedEnemy = engagedEnemies[0];
             focusedEnemy.SetFocus(true);
-            targetPos.position = focusedEnemy.GetComponent<BoxCollider2D>().bounds.center;
+            targetObject = focusedEnemy.gameObject;
             state = PlayerState.MovingToTarget;
             return;
         }              
@@ -110,9 +114,10 @@ public class PlayerInfo : MonoBehaviour{
             engagedEnemies.Remove(enemy);
         }
 
-        if (enemiesInTown >= maxEnemiesOnTown)
+        if (enemiesInTown >= maxEnemiesInTown)
         {
             EventManager.OnEnemiesAttakingTown();
+            focusedEnemy = null;
             state = PlayerState.EnemiesAttackingTown;
         }
     }
@@ -135,7 +140,7 @@ public class PlayerInfo : MonoBehaviour{
 
     void GoBackToTown()
     {
-        targetPos.position = townPos.position;
+        targetPos = townPos.position;
         state = PlayerState.MovingToTown;
     }
     

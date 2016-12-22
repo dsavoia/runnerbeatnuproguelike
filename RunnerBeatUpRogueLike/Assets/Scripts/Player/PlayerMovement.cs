@@ -4,8 +4,7 @@ using System.Collections;
 public class PlayerMovement : MonoBehaviour {
 
     PlayerInfo playerInfo;
-    public LayerMask objectsLayer;
-
+    public BoxCollider2D pathArea;
 
     void Start ()
     {
@@ -37,15 +36,19 @@ public class PlayerMovement : MonoBehaviour {
 
     protected virtual void MoveToTarget()
     {
-        Vector2 targetPosition = playerInfo.targetPos.GetComponent<BoxCollider2D>().bounds.center;
+        Vector2 targetPosition = playerInfo.targetObject.GetComponent<BoxCollider2D>().bounds.center;
+        //print("Target name: " + playerInfo.targetObject.name);
+
+        targetPosition.x = Mathf.Clamp(targetPosition.x, pathArea.bounds.min.x, pathArea.bounds.max.x);
+        targetPosition.y = Mathf.Clamp(targetPosition.y, pathArea.bounds.min.y, pathArea.bounds.max.y);
 
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, playerInfo.speed * Time.deltaTime);
-        UpdateFacingDirection();
+        UpdateFacingDirection(targetPosition);
 
-        Debug.DrawLine(transform.position, playerInfo.targetPos.position, Color.blue);
-        RaycastHit2D hit = Physics2D.Linecast(transform.position, targetPosition, objectsLayer);
+        Debug.DrawLine(transform.position, targetPosition, Color.blue);
+        RaycastHit2D hit = Physics2D.Linecast(transform.position, targetPosition, playerInfo.interactiveObjectsLayer);
 
-        print(hit.collider.name);
+        //print(hit.collider.name);
 
         if (hit.distance <= playerInfo.basicAttackRange)
         {
@@ -57,7 +60,7 @@ public class PlayerMovement : MonoBehaviour {
     void Move()
     {
         
-        if (transform.position == playerInfo.targetPos.position)
+        if (transform.position == playerInfo.targetPos)
         {
             if(playerInfo.state == PlayerInfo.PlayerState.MovingToPosition)
             {
@@ -70,14 +73,22 @@ public class PlayerMovement : MonoBehaviour {
         }
         else
         {
-            UpdateFacingDirection();
-            transform.position = Vector3.MoveTowards(transform.position, playerInfo.targetPos.position, playerInfo.speed * Time.deltaTime);
+            UpdateFacingDirection(playerInfo.targetPos);
+            Vector2 targetPos = playerInfo.targetPos;
+
+            if (playerInfo.state != PlayerInfo.PlayerState.MovingToTown)
+            {
+                targetPos.x = Mathf.Clamp(targetPos.x, pathArea.bounds.min.x, pathArea.bounds.max.x);
+                targetPos.y = Mathf.Clamp(targetPos.y, pathArea.bounds.min.y, pathArea.bounds.max.y);
+            }
+
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, playerInfo.speed * Time.deltaTime);
         }        
     }
 
-    void UpdateFacingDirection()
+    void UpdateFacingDirection(Vector3 targetPosition)
     {
-        if (playerInfo.targetPos.position.x >= transform.position.x)
+        if (targetPosition.x >= transform.position.x)
         {
             if (!playerInfo.facingRight)
             {

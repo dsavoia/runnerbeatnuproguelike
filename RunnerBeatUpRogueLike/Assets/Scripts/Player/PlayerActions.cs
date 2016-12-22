@@ -23,14 +23,16 @@ public class PlayerActions : MonoBehaviour {
 
     protected virtual void Fight()
     {
-        /*Debug.DrawLine(enemyBounds.center, player.transform.position, Color.yellow);
-        RaycastHit2D hit = Physics2D.Linecast(enemyBounds.center, player.transform.position, viewLayer);
-        
-        if (hit.distance > attackRange)
+        Vector2 targetPosition = playerInfo.targetObject.GetComponent<BoxCollider2D>().bounds.center;
+                
+        Debug.DrawLine(transform.position, targetPosition, Color.blue);
+        RaycastHit2D hit = Physics2D.Linecast(transform.position, targetPosition, playerInfo.interactiveObjectsLayer);
+
+        if (hit.distance > playerInfo.basicAttackRange)
         {
-            state = BaseEnemyState.MovingToPlayer;
+            playerInfo.SetState(PlayerInfo.PlayerState.MovingToTarget);
             return;
-        }*/
+        }
 
         if (Time.time > playerInfo.lastAttackTime + playerInfo.basicAttackCooldown)
         {
