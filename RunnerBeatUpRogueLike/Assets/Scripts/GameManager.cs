@@ -10,18 +10,24 @@ public class GameManager : MonoBehaviour {
        
     public struct PlayerAttributes
     {
-       public int lv;
-       public int experience;
-       public int strenght;
-       public int endurance;
-       public int agility;
-       public int gold;
+        public int lv;
+        public int experience;
+        public int pointsToSpend;
+        public int strenght;
+        public int endurance;
+        public int agility;
+        public int gold;
+
+        public int equipedWeaponIndex;
+        public int equipedArmorIndex;
+
     }
 
     public static GameManager instance = null;
     public PlayerAttributes playerAttributes;
 
     public string saveFileName = "RunnerRogueLikeBeatEmUp";
+    public GameObject continueButton;
 
     // Use this for initialization
     void Awake()
@@ -48,10 +54,13 @@ public class GameManager : MonoBehaviour {
 
         gameData.experience = playerAttributes.lv;
         gameData.lv = playerAttributes.experience;
+        gameData.pointsToSpend = playerAttributes.pointsToSpend;
         gameData.strenght = playerAttributes.strenght;
         gameData.endurance = playerAttributes.endurance;
         gameData.agility = playerAttributes.agility;
         gameData.gold = playerAttributes.gold;
+        gameData.equipedWeaponIndex = playerAttributes.equipedWeaponIndex;
+        gameData.equipedArmorIndex = playerAttributes.equipedArmorIndex;
 
         bf.Serialize(file, gameData);
         file.Close();
@@ -65,15 +74,36 @@ public class GameManager : MonoBehaviour {
         file.Close();
 
         playerAttributes = new PlayerAttributes();
-
-        playerAttributes.lv = gameData.experience;
+                
         playerAttributes.experience = gameData.lv;
+        playerAttributes.lv = gameData.experience;
+        playerAttributes.pointsToSpend = gameData.pointsToSpend;
         playerAttributes.strenght = gameData.strenght;
         playerAttributes.endurance = gameData.endurance;
         playerAttributes.agility = gameData.agility;
         playerAttributes.gold = gameData.gold;
+
+        playerAttributes.equipedWeaponIndex = gameData.equipedWeaponIndex;
+        playerAttributes.equipedArmorIndex = gameData.equipedArmorIndex;
+
     }
     
+    public void ClearGameData()
+    {
+        if (File.Exists(Application.persistentDataPath + "/" + saveFileName + ".dat"))
+        {
+            File.Delete(Application.persistentDataPath + "/" + saveFileName + ".dat");
+        }
+    }
+
+    public void ContinueGameButton()
+    {
+        if(File.Exists(Application.persistentDataPath + "/" + saveFileName + ".dat"))
+        {
+            continueButton.SetActive(true);
+        }
+    }
+
     // Maybe do a towns Buttons?
     public void LoadTown()
     {
@@ -88,6 +118,7 @@ public class GameManager : MonoBehaviour {
     public void MainMenu()
     {
         SceneManager.LoadScene("MainMenu");
+        ContinueGameButton();
     }
 }
 
@@ -96,8 +127,12 @@ public class GameData
 {    
     public int lv;
     public int experience;
+    public int pointsToSpend;
     public int strenght;
     public int endurance;
     public int agility;
     public int gold;
+
+    public int equipedWeaponIndex;
+    public int equipedArmorIndex;
 }
