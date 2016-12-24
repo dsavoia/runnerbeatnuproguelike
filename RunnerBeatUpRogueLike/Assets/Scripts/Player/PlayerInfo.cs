@@ -14,7 +14,7 @@ public class PlayerInfo : MonoBehaviour{
         Dead
     }
 
-    public int maxHp;
+    
     [HideInInspector] public int currentHp;
     [HideInInspector] public BaseEnemy focusedEnemy = null;
     [HideInInspector] public float lastAttackTime;
@@ -23,7 +23,7 @@ public class PlayerInfo : MonoBehaviour{
     [HideInInspector] public GameObject targetObject;
     [HideInInspector] public List<BaseEnemy> engagedEnemies;
 
-
+    public int maxHp;
     public float basicAttackRange;
     public float basicAttackCooldown;
     public int basicAttackDamage;
@@ -143,10 +143,4 @@ public class PlayerInfo : MonoBehaviour{
         targetPos = townPos.position;
         state = PlayerState.MovingToTown;
     }
-    
-    public void LoadTown()
-    {
-        ///TODO: Load town
-    }
-
 }

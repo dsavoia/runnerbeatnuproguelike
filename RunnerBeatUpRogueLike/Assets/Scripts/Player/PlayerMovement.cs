@@ -68,7 +68,7 @@ public class PlayerMovement : MonoBehaviour {
             }
             else
             {
-                playerInfo.LoadTown();
+                GameManager.instance.LoadTown();
             }                    
         }
         else
