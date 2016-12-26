@@ -7,8 +7,7 @@ public class ScenarioParallax : MonoBehaviour {
     public float speedFactor;
     public GameObject player;
     public float divFactor = 100;
-
-    PlayerInfo playerInfo;
+    
     Material bgMaterial;
 
 	// Use this for initialization
@@ -16,8 +15,7 @@ public class ScenarioParallax : MonoBehaviour {
     {        
         if(moveWithPlayer)
         {
-            playerInfo = player.GetComponent<PlayerInfo>();
-            speedFactor = playerInfo.speed - speedFactor;
+            speedFactor = PlayerInfo.instance.speed - speedFactor;
         }
 
         bgMaterial = GetComponent<MeshRenderer>().material;
@@ -28,12 +26,12 @@ public class ScenarioParallax : MonoBehaviour {
     {
         /*bool moving = false;
 
-        if(playerInfo.state == PlayerInfo.PlayerState.MovingToPosition || playerInfo.state == PlayerInfo.PlayerState.MovingForward)
+        if(PlayerInfo.instance.state == PlayerInfo.PlayerState.MovingToPosition || PlayerInfo.instance.state == PlayerInfo.PlayerState.MovingForward)
         {
             moving = true;
         }*/
 
-        float xOffset = moveWithPlayer? ((playerInfo.state == PlayerInfo.PlayerState.MovingForward && playerInfo.facingRight)? speedFactor/divFactor * Time.deltaTime : 0) : speedFactor/divFactor * Time.deltaTime;
+        float xOffset = moveWithPlayer? ((PlayerInfo.instance.state == PlayerInfo.PlayerState.MovingForward && PlayerInfo.instance.facingRight)? speedFactor/divFactor * Time.deltaTime : 0) : speedFactor/divFactor * Time.deltaTime;
 
         bgMaterial.mainTextureOffset = new Vector2(bgMaterial.mainTextureOffset.x + xOffset, bgMaterial.mainTextureOffset.y);
 

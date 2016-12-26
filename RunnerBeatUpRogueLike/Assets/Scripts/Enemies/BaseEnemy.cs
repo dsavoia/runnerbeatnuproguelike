@@ -30,8 +30,9 @@ public class BaseEnemy : MonoBehaviour {
     public float attackRange;
     public float Speed;
     public int goldValue;
+    public int experienceValue;
     #endregion
-        
+
     float lastAttack;
 
     #region viewArea vars
@@ -57,8 +58,7 @@ public class BaseEnemy : MonoBehaviour {
     BoxCollider2D playerBoxCollider2D;
     Bounds enemyBounds;
     Bounds playerBounds;
-    PlayerActions playerActions;
-    PlayerInfo playerInfo;
+    PlayerActions playerActions;    
 
     BaseEnemyState state;   
 
@@ -187,8 +187,7 @@ public class BaseEnemy : MonoBehaviour {
     {
         state = BaseEnemyState.MovingToPlayer;
         player = hit.collider.gameObject;
-        playerActions = player.GetComponent<PlayerActions>();
-        playerInfo = player.GetComponent<PlayerInfo>();
+        playerActions = player.GetComponent<PlayerActions>();        
         playerBoxCollider2D = hit.collider.GetComponent<BoxCollider2D>();
         MoveToPlayer();
     }
@@ -202,18 +201,18 @@ public class BaseEnemy : MonoBehaviour {
 
         if (hit.distance > attackRange)
         {
-            if (playerInfo.engagedEnemies.Contains(this))
+            if (PlayerInfo.instance.engagedEnemies.Contains(this))
             {
-                playerInfo.engagedEnemies.Remove(this);
+                PlayerInfo.instance.engagedEnemies.Remove(this);
             }
             state = BaseEnemyState.MovingToPlayer;
             return;
         }
         else
         {
-            if (!playerInfo.engagedEnemies.Contains(this))
+            if (!PlayerInfo.instance.engagedEnemies.Contains(this))
             {
-                playerInfo.engagedEnemies.Add(this);
+                PlayerInfo.instance.engagedEnemies.Add(this);
             }
         }
 

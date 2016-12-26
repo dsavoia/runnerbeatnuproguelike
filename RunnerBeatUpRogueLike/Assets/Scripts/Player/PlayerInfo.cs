@@ -11,10 +11,12 @@ public class PlayerInfo : MonoBehaviour{
         MovingToTown,
         Fighting,        
         EnemiesAttackingTown,        
-        Dead
+        Dead,
+        InTown
     }
 
-    
+    public static PlayerInfo instance = null;
+
     [HideInInspector] public int currentHp;
     [HideInInspector] public BaseEnemy focusedEnemy = null;
     [HideInInspector] public float lastAttackTime;
@@ -31,7 +33,7 @@ public class PlayerInfo : MonoBehaviour{
     public bool facingRight = true;
     public float distanceWalked = 0;
 
-    public int goldEarned = 0;
+    public int goldEarned = 0;    
     public int maxEnemiesInTown;
     public int enemiesInTown = 0;
 
@@ -39,15 +41,26 @@ public class PlayerInfo : MonoBehaviour{
 
     public Transform townPos;
 
-    public PlayerState state; 
+    public PlayerState state;
+
+    void Awake()
+    {
+        if (instance == null)
+        {            
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+
+        DontDestroyOnLoad(gameObject);
+    }
 
     void Start()
     {        
         EventManager.onEnemyDeath += EnemyDied;
-        EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;
-        currentHp = maxHp;
-        engagedEnemies = new List<BaseEnemy>();
-        state = PlayerState.MovingForward;
+        EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;        
     }
 
     void OnDisable()
@@ -56,6 +69,15 @@ public class PlayerInfo : MonoBehaviour{
         EventManager.onEnemyArrivedInTown -= EnemyArrivedInTown;
     }
 
+    public void StartAttack()
+    {
+        goldEarned = 0;
+        currentHp = maxHp;
+        engagedEnemies = new List<BaseEnemy>();
+        enemiesInTown = 0;
+
+        state = PlayerState.MovingForward;
+    }
 
     void Update()
     {
@@ -82,6 +104,11 @@ public class PlayerInfo : MonoBehaviour{
         goldEarned += amount;
     }
 
+    void EarnExperience(int aumount)
+    {
+        GameManager.instance.playerAttributes.experience += aumount;
+    }
+
     void EnemyDied(BaseEnemy enemy)
     {
         if(engagedEnemies.Contains(enemy))
@@ -90,8 +117,10 @@ public class PlayerInfo : MonoBehaviour{
         }
 
         focusedEnemy = null;
-        EarnGold(enemy.goldValue);        
-        
+        EarnGold(enemy.goldValue);
+        EarnExperience(enemy.experienceValue);
+
+
         if (engagedEnemies.Count > 0)
         {
             focusedEnemy = engagedEnemies[0];
@@ -140,6 +169,8 @@ public class PlayerInfo : MonoBehaviour{
 
     void GoBackToTown()
     {
+        GameManager.instance.playerAttributes.gold = goldEarned;
+        townPos = GameObject.Find("TownPos").transform;
         targetPos = townPos.position;
         state = PlayerState.MovingToTown;
     }

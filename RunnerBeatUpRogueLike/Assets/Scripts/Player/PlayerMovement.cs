@@ -2,18 +2,12 @@
 using System.Collections;
 
 public class PlayerMovement : MonoBehaviour {
-
-    PlayerInfo playerInfo;
+    
     public BoxCollider2D pathArea;
-
-    void Start ()
-    {
-        playerInfo = GetComponent<PlayerInfo>();
-    }
 	
 	void Update ()
     {
-        switch (playerInfo.state)
+        switch (PlayerInfo.instance.state)
         {
             case (PlayerInfo.PlayerState.MovingToPosition):
             case (PlayerInfo.PlayerState.MovingToTown):
@@ -21,9 +15,9 @@ public class PlayerMovement : MonoBehaviour {
             break;
 
             case (PlayerInfo.PlayerState.MovingForward):
-                if (!playerInfo.facingRight)
+                if (!PlayerInfo.instance.facingRight)
                 {
-                    playerInfo.facingRight = true;
+                    PlayerInfo.instance.facingRight = true;
                 }
             break;
 
@@ -36,23 +30,22 @@ public class PlayerMovement : MonoBehaviour {
 
     protected virtual void MoveToTarget()
     {
-        Vector2 targetPosition = playerInfo.targetObject.GetComponent<BoxCollider2D>().bounds.center;
-        //print("Target name: " + playerInfo.targetObject.name);
+        Vector2 targetPosition = PlayerInfo.instance.targetObject.GetComponent<BoxCollider2D>().bounds.center;        
 
         targetPosition.x = Mathf.Clamp(targetPosition.x, pathArea.bounds.min.x, pathArea.bounds.max.x);
         targetPosition.y = Mathf.Clamp(targetPosition.y, pathArea.bounds.min.y, pathArea.bounds.max.y);
 
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, playerInfo.speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, PlayerInfo.instance.speed * Time.deltaTime);
         UpdateFacingDirection(targetPosition);
 
         Debug.DrawLine(transform.position, targetPosition, Color.blue);
-        RaycastHit2D hit = Physics2D.Linecast(transform.position, targetPosition, playerInfo.interactiveObjectsLayer);
+        RaycastHit2D hit = Physics2D.Linecast(transform.position, targetPosition, PlayerInfo.instance.interactiveObjectsLayer);
 
         //print(hit.collider.name);
 
-        if (hit.distance <= playerInfo.basicAttackRange)
+        if (hit.distance <= PlayerInfo.instance.basicAttackRange)
         {
-            playerInfo.SetState(PlayerInfo.PlayerState.Fighting);
+            PlayerInfo.instance.SetState(PlayerInfo.PlayerState.Fighting);
         }
 
     }
@@ -60,29 +53,30 @@ public class PlayerMovement : MonoBehaviour {
     void Move()
     {
         
-        if (transform.position == playerInfo.targetPos)
+        if (transform.position == PlayerInfo.instance.targetPos)
         {
-            if(playerInfo.state == PlayerInfo.PlayerState.MovingToPosition)
+            if(PlayerInfo.instance.state == PlayerInfo.PlayerState.MovingToPosition)
             {
-                playerInfo.SetState(PlayerInfo.PlayerState.MovingForward);
+                PlayerInfo.instance.SetState(PlayerInfo.PlayerState.MovingForward);
             }
             else
             {
+                PlayerInfo.instance.SetState(PlayerInfo.PlayerState.InTown);
                 GameManager.instance.LoadTown();
             }                    
         }
         else
         {
-            UpdateFacingDirection(playerInfo.targetPos);
-            Vector2 targetPos = playerInfo.targetPos;
+            UpdateFacingDirection(PlayerInfo.instance.targetPos);
+            Vector2 targetPos = PlayerInfo.instance.targetPos;
 
-            if (playerInfo.state != PlayerInfo.PlayerState.MovingToTown)
+            if (PlayerInfo.instance.state != PlayerInfo.PlayerState.MovingToTown)
             {
                 targetPos.x = Mathf.Clamp(targetPos.x, pathArea.bounds.min.x, pathArea.bounds.max.x);
                 targetPos.y = Mathf.Clamp(targetPos.y, pathArea.bounds.min.y, pathArea.bounds.max.y);
             }
 
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, playerInfo.speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, PlayerInfo.instance.speed * Time.deltaTime);
         }        
     }
 
@@ -90,16 +84,16 @@ public class PlayerMovement : MonoBehaviour {
     {
         if (targetPosition.x >= transform.position.x)
         {
-            if (!playerInfo.facingRight)
+            if (!PlayerInfo.instance.facingRight)
             {
-                playerInfo.facingRight = true;
+                PlayerInfo.instance.facingRight = true;
             }
         }
         else
         {
-            if (playerInfo.facingRight)
+            if (PlayerInfo.instance.facingRight)
             {
-                playerInfo.facingRight = false;
+                PlayerInfo.instance.facingRight = false;
             }
         }
     }

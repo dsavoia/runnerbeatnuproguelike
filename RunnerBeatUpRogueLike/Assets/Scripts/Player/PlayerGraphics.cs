@@ -3,27 +3,25 @@ using System.Collections;
 
 public class PlayerGraphics : MonoBehaviour {
 
-    public Transform graphics;
-    PlayerInfo playerInfo;
+    public Transform graphics;    
     SpriteRenderer spriteRenderer;
     Color defaultColor;
 
     void Start()
-    {
-        playerInfo = GetComponent<PlayerInfo>();
+    {        
         spriteRenderer = graphics.GetComponent<SpriteRenderer>();
         defaultColor = spriteRenderer.color;
     }
 
     void Update()
     {
-        switch (playerInfo.state)
+        switch (PlayerInfo.instance.state)
         {
             case (PlayerInfo.PlayerState.Fighting):
-                if (!playerInfo.isBasicAttackOnCooldown)
+                if (!PlayerInfo.instance.isBasicAttackOnCooldown)
                 {
                     StartCoroutine(TempAttackAnim());
-                    playerInfo.isBasicAttackOnCooldown = true;
+                    PlayerInfo.instance.isBasicAttackOnCooldown = true;
                 }
             break;
 
@@ -41,7 +39,7 @@ public class PlayerGraphics : MonoBehaviour {
     {
         graphics.GetComponent<SpriteRenderer>().sortingOrder = Mathf.RoundToInt(transform.position.y * 100f) * -1;
 
-        if (playerInfo.facingRight)
+        if (PlayerInfo.instance.facingRight)
         {
             if(Mathf.Sign(transform.localScale.x) < 0)
             {

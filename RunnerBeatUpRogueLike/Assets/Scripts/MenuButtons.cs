@@ -1,16 +1,32 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class MenuButtons : MonoBehaviour {
 
+    public GameObject continueButton;
+
+    public void Start()
+    {
+        ContinueGameButton();    
+    }
+
+    public void ContinueGameButton()
+    {
+        if (File.Exists(Application.persistentDataPath + "/" + GameManager.instance.saveFileName + ".dat"))
+        {
+            continueButton.SetActive(true);
+        }
+    }
+
     public void StartNewGame()
     {
-        SceneManager.LoadScene("Town");
+        GameManager.instance.StartNewGame();
     }
 
     public void ContinueGame()
     {
-        SceneManager.LoadScene("Town");
+        GameManager.instance.LoadGame();
     }
 
     public void QuitGame()
@@ -20,6 +36,6 @@ public class MenuButtons : MonoBehaviour {
 
     public void MainMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        GameManager.instance.MainMenu();
     }    
 }

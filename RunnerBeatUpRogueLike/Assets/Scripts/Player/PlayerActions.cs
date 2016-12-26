@@ -1,19 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerActions : MonoBehaviour {
-
-    PlayerInfo playerInfo;
-
-	// Use this for initialization
-	void Start ()
-    {
-        playerInfo = GetComponent<PlayerInfo>();
-	}
+public class PlayerActions : MonoBehaviour {    	
 
     void Update()
     {
-        switch (playerInfo.state)
+        switch (PlayerInfo.instance.state)
         {
             case (PlayerInfo.PlayerState.Fighting):
                 Fight();
@@ -23,29 +15,29 @@ public class PlayerActions : MonoBehaviour {
 
     protected virtual void Fight()
     {
-        Vector2 targetPosition = playerInfo.targetObject.GetComponent<BoxCollider2D>().bounds.center;
+        Vector2 targetPosition = PlayerInfo.instance.targetObject.GetComponent<BoxCollider2D>().bounds.center;
                 
         Debug.DrawLine(transform.position, targetPosition, Color.blue);
-        RaycastHit2D hit = Physics2D.Linecast(transform.position, targetPosition, playerInfo.interactiveObjectsLayer);
+        RaycastHit2D hit = Physics2D.Linecast(transform.position, targetPosition, PlayerInfo.instance.interactiveObjectsLayer);
 
-        if (hit.distance > playerInfo.basicAttackRange)
+        if (hit.distance > PlayerInfo.instance.basicAttackRange)
         {
-            playerInfo.SetState(PlayerInfo.PlayerState.MovingToTarget);
+            PlayerInfo.instance.SetState(PlayerInfo.PlayerState.MovingToTarget);
             return;
         }
 
-        if (Time.time > playerInfo.lastAttackTime + playerInfo.basicAttackCooldown)
+        if (Time.time > PlayerInfo.instance.lastAttackTime + PlayerInfo.instance.basicAttackCooldown)
         {
-            playerInfo.isBasicAttackOnCooldown = false;
-            playerInfo.focusedEnemy.TakeDamage(playerInfo.basicAttackDamage);            
-            playerInfo.lastAttackTime = Time.time;
+            PlayerInfo.instance.isBasicAttackOnCooldown = false;
+            PlayerInfo.instance.focusedEnemy.TakeDamage(PlayerInfo.instance.basicAttackDamage);            
+            PlayerInfo.instance.lastAttackTime = Time.time;
         }
     }    
 
     public void TakeDamage(int damage)
     {
-        playerInfo.currentHp -= damage;
-        if (playerInfo.currentHp <= 0)
+        PlayerInfo.instance.currentHp -= damage;
+        if (PlayerInfo.instance.currentHp <= 0)
         {
             Die();
         }
@@ -53,7 +45,7 @@ public class PlayerActions : MonoBehaviour {
 
     void Die()
     {
-        playerInfo.SetState(PlayerInfo.PlayerState.Dead);
+        PlayerInfo.instance.SetState(PlayerInfo.PlayerState.Dead);
         EventManager.OnPlayerDeath();
     }
 }

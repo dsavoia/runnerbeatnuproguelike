@@ -6,16 +6,14 @@ public class PlayerHUD : MonoBehaviour {
     public Text distanceText;
     public Text goldAmount;
     public Text enemiesOnTown;
+    public Text experience;
 
     public Image healthBar;
     public Text healthQty;   
 
-    PlayerInfo playerInfo;
-
     void Start()
     {
         healthBar.fillAmount = 1;
-        playerInfo = GetComponent<PlayerInfo>();
     }
 
 	void Update ()
@@ -26,14 +24,15 @@ public class PlayerHUD : MonoBehaviour {
 
     void UpdateHUDTexts()
     {
-        distanceText.text = playerInfo.distanceWalked.ToString("F0") + " meters";
-        goldAmount.text = playerInfo.goldEarned.ToString() + " g";
-        enemiesOnTown.text = playerInfo.enemiesInTown.ToString() + " / " + playerInfo.maxEnemiesInTown.ToString() + " enememies in town";
-        healthQty.text = playerInfo.currentHp + " / " + playerInfo.maxHp;
+        distanceText.text = PlayerInfo.instance.distanceWalked.ToString("F0") + " meters";
+        goldAmount.text = PlayerInfo.instance.goldEarned.ToString() + " g";
+        enemiesOnTown.text = PlayerInfo.instance.enemiesInTown.ToString() + " / " + PlayerInfo.instance.maxEnemiesInTown.ToString() + " enememies in town";
+        healthQty.text = PlayerInfo.instance.currentHp + " / " + PlayerInfo.instance.maxHp;
+        experience.text = "Experience: " + GameManager.instance.playerAttributes.experience.ToString() ;
     }
 
     void UpdateHealthBar()
     {
-        healthBar.fillAmount = (float)playerInfo.currentHp/(float)playerInfo.maxHp;
+        healthBar.fillAmount = (float)PlayerInfo.instance.currentHp /(float)PlayerInfo.instance.maxHp;
     }
 }

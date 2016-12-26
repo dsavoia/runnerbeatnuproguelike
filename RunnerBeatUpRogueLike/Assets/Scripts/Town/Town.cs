@@ -28,8 +28,8 @@ public class Town : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-	    
-	}
+        LoadFieldsData();
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -39,7 +39,28 @@ public class Town : MonoBehaviour {
 
     public void LoadFieldsData()
     {
+        lv.text = "Level: " + GameManager.instance.playerAttributes.lv.ToString();
+        pointsToSpend.text = "Points: " + GameManager.instance.playerAttributes.pointsToSpend.ToString();
+        experience.text = "Experience: " + GameManager.instance.playerAttributes.experience.ToString();
+        strenght.text = "Strenght: " + GameManager.instance.playerAttributes.strenght.ToString();
+        endurance.text = "Endurance: " + GameManager.instance.playerAttributes.endurance.ToString();
+        agility.text = "Agility: " + GameManager.instance.playerAttributes.agility.ToString();
 
+        hp.text = "Hp: " + PlayerInfo.instance.maxHp.ToString();
+        damage.text = "Damage: " + PlayerInfo.instance.basicAttackDamage.ToString();
+        atkRate.text = "Atk Rate: " + PlayerInfo.instance.basicAttackCooldown.ToString();
+        movSpeed.text = "Move speed: " + PlayerInfo.instance.speed.ToString();
+        weaponName.text = "Weapon: " + "Wooden club";
+        weaponDmg.text = "Damage: " + "1";
+        weaponAtkSpeed.text = "Atk speed: " + "1";
+        armorName.text = "Armor: " + "common clothes";
+        armorDef.text = "Def: " + "1";
+        amorWeight.text = "Weight: " + "1";
+
+        townLv.text = "Town Lv: " + GameManager.instance.playerAttributes.townLevel.ToString();
+        townDefCap.text = "Def Cap: " + GameManager.instance.playerAttributes.townDefCap.ToString();
+        townChanceToKill.text = "Chance to Kill: " + GameManager.instance.playerAttributes.townChanceToKill.ToString();
+        gold.text = "Gold: " + GameManager.instance.playerAttributes.gold.ToString();
     }
 
 
@@ -49,7 +70,7 @@ public class Town : MonoBehaviour {
     }
 
     public void GoBackToMenu()
-    {
+    {        
         GameManager.instance.MainMenu();
     }
 

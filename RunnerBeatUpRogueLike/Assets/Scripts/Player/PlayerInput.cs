@@ -1,19 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerInput : MonoBehaviour {
-
-    PlayerInfo playerInfo;    
-
-    void Start()
-    {
-        playerInfo = GetComponent<PlayerInfo>();
-    }
+public class PlayerInput : MonoBehaviour {    
 
     // Update is called once per frame
     void Update ()
     {
-        switch (playerInfo.state)
+        switch (PlayerInfo.instance.state)
         {
             case PlayerInfo.PlayerState.Dead:
             case PlayerInfo.PlayerState.MovingToTown:
@@ -39,27 +32,27 @@ public class PlayerInput : MonoBehaviour {
                 //print("Clicked on: " + hitInfo.collider.gameObject.name);
                 if (hitInfo.collider.gameObject.tag == "Path")
                 {
-                    if (playerInfo.focusedEnemy != null)
+                    if (PlayerInfo.instance.focusedEnemy != null)
                     {
-                        playerInfo.focusedEnemy.SetFocus(false);
-                        playerInfo.focusedEnemy = null;
+                        PlayerInfo.instance.focusedEnemy.SetFocus(false);
+                        PlayerInfo.instance.focusedEnemy = null;
                     }
-                    playerInfo.targetPos = new Vector3(hitInfo.point.x, hitInfo.point.y, transform.position.z);
-                    playerInfo.SetState(PlayerInfo.PlayerState.MovingToPosition);
+                    PlayerInfo.instance.targetPos = new Vector3(hitInfo.point.x, hitInfo.point.y, transform.position.z);
+                    PlayerInfo.instance.SetState(PlayerInfo.PlayerState.MovingToPosition);
                 }
 
                 if (hitInfo.collider.gameObject.tag == "Enemy")
                 {
-                    if(playerInfo.focusedEnemy != null)
+                    if(PlayerInfo.instance.focusedEnemy != null)
                     {
-                        playerInfo.focusedEnemy.SetFocus(false);
+                        PlayerInfo.instance.focusedEnemy.SetFocus(false);
                     }
 
-                    playerInfo.focusedEnemy = hitInfo.collider.GetComponent<BaseEnemy>();
-                    playerInfo.focusedEnemy.SetFocus(true);
+                    PlayerInfo.instance.focusedEnemy = hitInfo.collider.GetComponent<BaseEnemy>();
+                    PlayerInfo.instance.focusedEnemy.SetFocus(true);
 
-                    playerInfo.targetObject = hitInfo.collider.gameObject;
-                    playerInfo.SetState(PlayerInfo.PlayerState.MovingToTarget);
+                    PlayerInfo.instance.targetObject = hitInfo.collider.gameObject;
+                    PlayerInfo.instance.SetState(PlayerInfo.PlayerState.MovingToTarget);
                 }
             }            
         }

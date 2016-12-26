@@ -12,8 +12,7 @@ public class EnemySpawner : MonoBehaviour {
     public int maxSpawnQty = 2;
     
     float timeToNextSpawn = 0;
-    bool isSpawning = false;
-    public PlayerInfo playerInfo;
+    bool isSpawning = false;   
     
     public int currentEnemyQty = 0;
 
@@ -35,7 +34,7 @@ public class EnemySpawner : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
-        switch (playerInfo.state)
+        switch (PlayerInfo.instance.state)
         {
             case PlayerInfo.PlayerState.Dead:
             case PlayerInfo.PlayerState.MovingToTown:
