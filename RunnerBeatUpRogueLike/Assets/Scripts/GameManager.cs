@@ -27,6 +27,9 @@ public class GameManager : MonoBehaviour {
 
     }
 
+    public int expToNextLevel;
+    public float consLevelUp = 0.04f;
+
     public static GameManager instance = null;
     public PlayerAttributes playerAttributes;
 
@@ -63,6 +66,23 @@ public class GameManager : MonoBehaviour {
     public void MainMenu()
     {
         SceneManager.LoadScene("MainMenu");        
+    }
+
+    public void CalculateNextLevelExperience()
+    {
+        //print(consLevelUp + " * " + Mathf.Sqrt(playerAttributes.experience) + " / (" + (playerAttributes.lv + 1) + ")");
+
+        expToNextLevel = (int)Mathf.Pow((playerAttributes.lv / consLevelUp),2) ;
+    }
+
+    public void CheckLvUp()
+    {
+        if(playerAttributes.experience >= expToNextLevel)
+        {
+            playerAttributes.pointsToSpend += 1;
+            playerAttributes.lv++;
+            CalculateNextLevelExperience();
+        }
     }
 
     public void StartNewGame()

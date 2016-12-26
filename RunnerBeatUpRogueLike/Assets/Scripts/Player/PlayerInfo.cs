@@ -107,6 +107,7 @@ public class PlayerInfo : MonoBehaviour{
     void EarnExperience(int aumount)
     {
         GameManager.instance.playerAttributes.experience += aumount;
+        GameManager.instance.CheckLvUp();
     }
 
     void EnemyDied(BaseEnemy enemy)

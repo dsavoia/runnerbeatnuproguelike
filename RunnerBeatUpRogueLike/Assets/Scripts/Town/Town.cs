@@ -24,11 +24,16 @@ public class Town : MonoBehaviour {
     public Text townChanceToKill;
     public Text gold;
 
+    public GameObject buttonUpParent;
+
 
     // Use this for initialization
     void Start ()
     {
+        PlayerInfo.instance.SetState(PlayerInfo.PlayerState.InTown);
+        GameManager.instance.CalculateNextLevelExperience();
         LoadFieldsData();
+        CheckIfPointsToSpend();
     }
 	
 	// Update is called once per frame
@@ -39,12 +44,10 @@ public class Town : MonoBehaviour {
 
     public void LoadFieldsData()
     {
-        lv.text = "Level: " + GameManager.instance.playerAttributes.lv.ToString();
-        pointsToSpend.text = "Points: " + GameManager.instance.playerAttributes.pointsToSpend.ToString();
-        experience.text = "Experience: " + GameManager.instance.playerAttributes.experience.ToString();
-        strenght.text = "Strenght: " + GameManager.instance.playerAttributes.strenght.ToString();
-        endurance.text = "Endurance: " + GameManager.instance.playerAttributes.endurance.ToString();
-        agility.text = "Agility: " + GameManager.instance.playerAttributes.agility.ToString();
+        lv.text = "Level: " + GameManager.instance.playerAttributes.lv.ToString();        
+        experience.text = "Exp: " + GameManager.instance.playerAttributes.experience.ToString() + " / " + GameManager.instance.expToNextLevel;
+
+        UpdateAttributesValues();
 
         hp.text = "Hp: " + PlayerInfo.instance.maxHp.ToString();
         damage.text = "Damage: " + PlayerInfo.instance.basicAttackDamage.ToString();
@@ -63,6 +66,49 @@ public class Town : MonoBehaviour {
         gold.text = "Gold: " + GameManager.instance.playerAttributes.gold.ToString();
     }
 
+    void UpdateAttributesValues()
+    {
+        strenght.text = "Strenght: " + GameManager.instance.playerAttributes.strenght.ToString();
+        endurance.text = "Endurance: " + GameManager.instance.playerAttributes.endurance.ToString();
+        agility.text = "Agility: " + GameManager.instance.playerAttributes.agility.ToString();
+        pointsToSpend.text = "Points: " + GameManager.instance.playerAttributes.pointsToSpend.ToString();
+    }
+
+    void CheckIfPointsToSpend()
+    {
+        if(GameManager.instance.playerAttributes.pointsToSpend > 0)
+        {
+            buttonUpParent.SetActive(true);
+        }
+        else
+        {
+            buttonUpParent.SetActive(false);
+        }
+    }
+
+    //https://www.twitch.tv/gruntartv
+
+    public void AddPointToAttribute(int attCode)
+    {
+        switch(attCode)
+        {
+            case (0):
+                GameManager.instance.playerAttributes.strenght++;
+                GameManager.instance.playerAttributes.pointsToSpend--;
+            break;
+            case (1):
+                GameManager.instance.playerAttributes.endurance++;
+                GameManager.instance.playerAttributes.pointsToSpend--;
+            break;
+            case (2):
+                GameManager.instance.playerAttributes.agility++;
+                GameManager.instance.playerAttributes.pointsToSpend--;
+            break;
+        }
+
+        UpdateAttributesValues();
+        CheckIfPointsToSpend();
+    }
 
     public void AttackTheEnemies()
     {
