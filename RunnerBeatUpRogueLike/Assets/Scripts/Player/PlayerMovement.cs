@@ -43,7 +43,7 @@ public class PlayerMovement : MonoBehaviour {
 
         //print(hit.collider.name);
 
-        if (hit.distance <= PlayerInfo.instance.basicAttackRange)
+        if (hit.distance <= PlayerInfo.instance.attackRange)
         {
             PlayerInfo.instance.SetState(PlayerInfo.PlayerState.Fighting);
         }

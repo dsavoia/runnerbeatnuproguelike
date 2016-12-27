@@ -26,9 +26,9 @@ public class PlayerHUD : MonoBehaviour {
     {
         distanceText.text = PlayerInfo.instance.distanceWalked.ToString("F0") + " meters";
         goldAmount.text = PlayerInfo.instance.goldEarned.ToString() + " g";
-        enemiesOnTown.text = PlayerInfo.instance.enemiesInTown.ToString() + " / " + PlayerInfo.instance.maxEnemiesInTown.ToString() + " enememies in town";
+        enemiesOnTown.text = PlayerInfo.instance.enemiesInTown.ToString() + " / " + PlayerInfo.instance.maxEnemiesInTown.ToString() + " enemies in town";
         healthQty.text = PlayerInfo.instance.currentHp + " / " + PlayerInfo.instance.maxHp;
-        experience.text = "Experience: " + GameManager.instance.playerAttributes.experience.ToString() ;
+        experience.text = "Experience: " + PlayerInfo.instance.playerAttributes.experience.ToString() ;
     }
 
     void UpdateHealthBar()

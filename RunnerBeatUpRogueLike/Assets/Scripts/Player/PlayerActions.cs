@@ -1,7 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerActions : MonoBehaviour {    	
+public class PlayerActions : MonoBehaviour {
+
+    float attackCoolDown;
+
+    void Start()
+    {
+        attackCoolDown = 1 / PlayerInfo.instance.attackRate;
+    }
 
     void Update()
     {
@@ -20,16 +27,16 @@ public class PlayerActions : MonoBehaviour {
         Debug.DrawLine(transform.position, targetPosition, Color.blue);
         RaycastHit2D hit = Physics2D.Linecast(transform.position, targetPosition, PlayerInfo.instance.interactiveObjectsLayer);
 
-        if (hit.distance > PlayerInfo.instance.basicAttackRange)
+        if (hit.distance > PlayerInfo.instance.attackRange)
         {
             PlayerInfo.instance.SetState(PlayerInfo.PlayerState.MovingToTarget);
             return;
         }
 
-        if (Time.time > PlayerInfo.instance.lastAttackTime + PlayerInfo.instance.basicAttackCooldown)
+        if (Time.time > PlayerInfo.instance.lastAttackTime + attackCoolDown)
         {
             PlayerInfo.instance.isBasicAttackOnCooldown = false;
-            PlayerInfo.instance.focusedEnemy.TakeDamage(PlayerInfo.instance.basicAttackDamage);            
+            PlayerInfo.instance.focusedEnemy.TakeDamage(PlayerInfo.instance.attackDamage);            
             PlayerInfo.instance.lastAttackTime = Time.time;
         }
     }    

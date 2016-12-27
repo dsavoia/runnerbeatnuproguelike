@@ -7,35 +7,14 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 
 public class GameManager : MonoBehaviour {
-       
-    public struct PlayerAttributes
-    {
-        public int lv;
-        public int experience;
-        public int pointsToSpend;
-        public int strenght;
-        public int endurance;
-        public int agility;
-        public int gold;
-
-        public int townLevel;
-        public int townDefCap;
-        public int townChanceToKill;
-
-        public int equipedWeaponIndex;
-        public int equipedArmorIndex;
-
-    }
-
-    public int expToNextLevel;
-    public float consLevelUp = 0.04f;
 
     public static GameManager instance = null;
-    public PlayerAttributes playerAttributes;
+        
+    public string saveFileName = "RunnerRogueLikeBeatEmUp";
 
-    public string saveFileName = "RunnerRogueLikeBeatEmUp";   
-
-    // Use this for initialization
+    public GameObject[] weapons;
+    public GameObject[] armors;
+    
     void Awake()
     {
         if (instance == null)
@@ -50,7 +29,11 @@ public class GameManager : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
     }   
 
-    // Maybe do a towns Buttons?
+    public void StartNewGame()
+    {
+        PlayerInfo.instance.SetNewPlayerAttributes();
+    }
+    
     public void LoadTown()
     {        
         SaveGame();
@@ -67,46 +50,7 @@ public class GameManager : MonoBehaviour {
     {
         SceneManager.LoadScene("MainMenu");        
     }
-
-    public void CalculateNextLevelExperience()
-    {
-        //print(consLevelUp + " * " + Mathf.Sqrt(playerAttributes.experience) + " / (" + (playerAttributes.lv + 1) + ")");
-
-        expToNextLevel = (int)Mathf.Pow((playerAttributes.lv / consLevelUp),2) ;
-    }
-
-    public void CheckLvUp()
-    {
-        if(playerAttributes.experience >= expToNextLevel)
-        {
-            playerAttributes.pointsToSpend += 1;
-            playerAttributes.lv++;
-            CalculateNextLevelExperience();
-        }
-    }
-
-    public void StartNewGame()
-    {        
-        playerAttributes = new PlayerAttributes();
-
-        playerAttributes.experience = 0;
-        playerAttributes.lv = 1;
-        playerAttributes.pointsToSpend = 0;
-        playerAttributes.strenght = 1;
-        playerAttributes.endurance = 1;
-        playerAttributes.agility = 1;
-        playerAttributes.gold = 0;
-
-        playerAttributes.townLevel = 1;
-        playerAttributes.townDefCap = 3;
-        playerAttributes.townChanceToKill = 0;
-
-        playerAttributes.equipedWeaponIndex = 0;
-        playerAttributes.equipedArmorIndex = 0;
-
-        LoadTown();
-    }
-
+     
     public void SaveGame()
     {
         BinaryFormatter bf = new BinaryFormatter();
@@ -114,20 +58,20 @@ public class GameManager : MonoBehaviour {
 
         GameData gameData = new GameData();
 
-        gameData.lv = playerAttributes.lv;
-        gameData.experience = playerAttributes.experience;        
-        gameData.pointsToSpend = playerAttributes.pointsToSpend;
-        gameData.strenght = playerAttributes.strenght;
-        gameData.endurance = playerAttributes.endurance;
-        gameData.agility = playerAttributes.agility;
-        gameData.gold = playerAttributes.gold;        
+        gameData.lv = PlayerInfo.instance.playerAttributes.lv;
+        gameData.experience = PlayerInfo.instance.playerAttributes.experience;        
+        gameData.pointsToSpend = PlayerInfo.instance.playerAttributes.pointsToSpend;
+        gameData.strength = PlayerInfo.instance.playerAttributes.strength;
+        gameData.endurance = PlayerInfo.instance.playerAttributes.endurance;
+        gameData.agility = PlayerInfo.instance.playerAttributes.agility;
+        gameData.gold = PlayerInfo.instance.playerAttributes.gold;        
 
-        gameData.townLevel = playerAttributes.townLevel;
-        gameData.townDefCap = playerAttributes.townDefCap;
-        gameData.townChanceToKill = playerAttributes.townChanceToKill;
+        gameData.townLevel = PlayerInfo.instance.playerAttributes.townLevel;
+        gameData.townDefCap = PlayerInfo.instance.playerAttributes.townDefCap;
+        gameData.townChanceToKill = PlayerInfo.instance.playerAttributes.townChanceToKill;
 
-        gameData.equipedWeaponIndex = playerAttributes.equipedWeaponIndex;
-        gameData.equipedArmorIndex = playerAttributes.equipedArmorIndex;
+        gameData.equipedWeaponIndex = PlayerInfo.instance.playerAttributes.equipedWeaponIndex;
+        gameData.equipedArmorIndex = PlayerInfo.instance.playerAttributes.equipedArmorIndex;
 
         bf.Serialize(file, gameData);
         file.Close();
@@ -140,22 +84,31 @@ public class GameManager : MonoBehaviour {
         GameData gameData = (GameData)bf.Deserialize(file);
         file.Close();
 
-        playerAttributes = new PlayerAttributes();
+        PlayerInfo.instance.playerAttributes = new PlayerInfo.PlayerAttributes();
 
-        playerAttributes.lv = gameData.lv;
-        playerAttributes.experience = gameData.experience;        
-        playerAttributes.pointsToSpend = gameData.pointsToSpend;
-        playerAttributes.strenght = gameData.strenght;
-        playerAttributes.endurance = gameData.endurance;
-        playerAttributes.agility = gameData.agility;
-        playerAttributes.gold = gameData.gold;
+        PlayerInfo.instance.playerAttributes.lv = gameData.lv;
+        PlayerInfo.instance.playerAttributes.experience = gameData.experience;
+        PlayerInfo.instance.playerAttributes.pointsToSpend = gameData.pointsToSpend;
+        PlayerInfo.instance.playerAttributes.strength = gameData.strength;
+        PlayerInfo.instance.playerAttributes.endurance = gameData.endurance;
+        PlayerInfo.instance.playerAttributes.agility = gameData.agility;
+        PlayerInfo.instance.playerAttributes.gold = gameData.gold;
 
-        playerAttributes.townLevel = gameData.townLevel;
-        playerAttributes.townDefCap = gameData.townDefCap;
-        playerAttributes.townChanceToKill = gameData.townChanceToKill;
+        PlayerInfo.instance.playerAttributes.townLevel = gameData.townLevel;
+        PlayerInfo.instance.playerAttributes.townDefCap = gameData.townDefCap;
+        PlayerInfo.instance.playerAttributes.townChanceToKill = gameData.townChanceToKill;
 
-        playerAttributes.equipedWeaponIndex = gameData.equipedWeaponIndex;
-        playerAttributes.equipedArmorIndex = gameData.equipedArmorIndex;
+        PlayerInfo.instance.playerAttributes.equipedWeaponIndex = gameData.equipedWeaponIndex;
+        PlayerInfo.instance.playerAttributes.equipedArmorIndex = gameData.equipedArmorIndex;
+
+        PlayerInfo.instance.SetWeaponScript();
+        PlayerInfo.instance.SetArmorScript();
+
+        PlayerInfo.instance.CalculateNewAtkValues();
+        PlayerInfo.instance.CalculateNewAtkRateValue();
+        PlayerInfo.instance.CalculateNewMovSpeedValue();
+        PlayerInfo.instance.CalculateNewDmgReductionValue();
+        PlayerInfo.instance.CalculateNewHealthValue();
 
         LoadTown();
 
@@ -177,7 +130,7 @@ public class GameData
     public int lv;
     public int experience;
     public int pointsToSpend;
-    public int strenght;
+    public int strength;
     public int endurance;
     public int agility;
     public int gold;
