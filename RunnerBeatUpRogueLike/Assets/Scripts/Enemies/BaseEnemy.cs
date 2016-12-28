@@ -14,6 +14,8 @@ public class BaseEnemy : MonoBehaviour {
         Dead   
     }
 
+    bool isFirstAttack = true;
+
     public Transform graphics;
     public GameObject selectionBorder;
     BoxCollider2D pathArea;
@@ -214,6 +216,12 @@ public class BaseEnemy : MonoBehaviour {
             {
                 PlayerInfo.instance.engagedEnemies.Add(this);
             }
+        }
+
+        if (isFirstAttack)
+        {
+            isFirstAttack = false;
+            lastAttack = Time.time - attackCooldown/2;
         }
 
         if(Time.time > lastAttack + attackCooldown)
