@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour {
 
     public void MainMenu()
     {
+        SaveGame();
         SceneManager.LoadScene("MainMenu");        
     }
      
