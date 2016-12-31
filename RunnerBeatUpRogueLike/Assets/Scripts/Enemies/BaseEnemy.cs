@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
-public class BaseEnemy : MonoBehaviour {
+public class BaseEnemy : MonoBehaviour, IAttacker, ICombatTarget
+{
 
     public enum BaseEnemyState
     {
@@ -60,7 +62,7 @@ public class BaseEnemy : MonoBehaviour {
     BoxCollider2D playerBoxCollider2D;
     Bounds enemyBounds;
     Bounds playerBounds;
-    PlayerActions playerActions;    
+    ICombatTarget target;    
 
     BaseEnemyState state;   
 
@@ -189,7 +191,7 @@ public class BaseEnemy : MonoBehaviour {
     {
         state = BaseEnemyState.MovingToPlayer;
         player = hit.collider.gameObject;
-        playerActions = player.GetComponent<PlayerActions>();        
+        target = player.GetComponent<PlayerActions>();        
         playerBoxCollider2D = hit.collider.GetComponent<BoxCollider2D>();
         MoveToPlayer();
     }
@@ -226,7 +228,8 @@ public class BaseEnemy : MonoBehaviour {
 
         if(Time.time > lastAttack + attackCooldown)
         {
-            playerActions.TakeDamage(attackDamage);
+            //playerActions.TakeDamage(attackDamage);
+            GetTarget().Defend(Attack());
             StartCoroutine(TempAttackAnim());
             lastAttack = Time.time;
         }
@@ -352,5 +355,37 @@ public class BaseEnemy : MonoBehaviour {
         Debug.DrawLine(topLeft, topRight, Color.blue);
         Debug.DrawLine(topRight, bottomRight, Color.blue);
         Debug.DrawLine(bottomRight, bottomLeft, Color.blue);
-    }    
+    }
+
+    #region IAttacker
+    public List<IAttack> Attack()
+    {
+        List<IAttack> attacks = new List<IAttack>();
+        attacks.Add(new BasicAttack(attackDamage));
+        return attacks;
+    }
+
+    /// <summary>
+    /// IAttacker interface
+    /// </summary>
+    /// <returns></returns>
+    public ICombatTarget GetTarget()
+    {
+        return target;
+    }
+
+    #endregion
+
+    #region ICombatTarget
+    public void Defend(List<IAttack> attacks)
+    {
+        int damage = 0;
+        foreach (IAttack attack in attacks)
+        {
+            damage += attack.GetDamage();
+        }
+        TakeDamage(damage);
+    }
+    #endregion
+
 }

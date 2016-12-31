@@ -42,6 +42,7 @@ public class PlayerInfo : MonoBehaviour{
     public static PlayerInfo instance = null;
 
     [HideInInspector] public int currentHp;
+    //todo change focusedEnemy to ISimpleCombat
     [HideInInspector] public BaseEnemy focusedEnemy = null;
     [HideInInspector] public float lastAttackTime;
     [HideInInspector] public bool isBasicAttackOnCooldown = false;
@@ -53,12 +54,13 @@ public class PlayerInfo : MonoBehaviour{
     public int initialHealthValue = 10;
     public float attackRange;
     public float attackRate;
+    public IAttack basicAttack;
     public int attackDamage;
     public float speed;    
     public bool facingRight = true;
     public float distanceWalked = 0;
 
-    public BaseWeapon weapon;
+    public BasicWeapon weapon;
     public BaseArmor armor;
 
     public int goldEarned = 0;    
@@ -179,12 +181,19 @@ public class PlayerInfo : MonoBehaviour{
 
     public void CalculateNewAtkValues()
     {
-        attackDamage = Mathf.RoundToInt((playerAttributes.strength * 0.8f) + (weapon.damage * 0.8f));
+        attackDamage = 0;
+        basicAttack = new BasicAttack(Mathf.RoundToInt(playerAttributes.strength * 0.8f));
+        attackDamage += basicAttack.GetDamage();
+        if (weapon) {
+            attackDamage += Mathf.RoundToInt(weapon.GetDamage() * 0.8f); 
+        }
+        //attackDamage = Mathf.RoundToInt((playerAttributes.strength * 0.8f) + (weapon.GetDamage() * 0.8f));
+
     }    
 
     public void CalculateNewAtkRateValue()
     {
-        attackRate = weapon.atkRate + Mathf.Log(1 + (playerAttributes.agility/10.0f));              
+        attackRate = weapon.GetAttackRate() + Mathf.Log(1 + (playerAttributes.agility/10.0f));              
     }
 
     public void CalculateNewMovSpeedValue()
@@ -275,7 +284,7 @@ public class PlayerInfo : MonoBehaviour{
 
     public void SetWeaponScript()
     {
-        weapon = GameManager.instance.weapons[playerAttributes.equipedWeaponIndex].GetComponent<BaseWeapon>();        
+        weapon = GameManager.instance.weapons[playerAttributes.equipedWeaponIndex].GetComponent<BasicWeapon>();        
     }
 
     public void SetArmorScript()

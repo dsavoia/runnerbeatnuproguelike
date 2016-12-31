@@ -37,11 +37,17 @@ public class Town : MonoBehaviour {
         PlayerInfo.instance.CalculateNextLevelExperience();
         LoadFieldsData();
         CheckIfPointsToSpend();
+<<<<<<< HEAD
+    }
+	
+	// Update is called once per frame
+=======
         townCanvas.SetActive(true);
         shopCanvas.SetActive(false);
     }
 	
 	// Update is called once per frame
+>>>>>>> 8a6c5f2dcbec6d5e824cc31214a93ee0d486a33f
 	void Update ()
     {
 	
@@ -74,9 +80,9 @@ public class Town : MonoBehaviour {
 
     void UpdateWeaponTexts()
     {
-        weaponName.text = "Weapon: " + PlayerInfo.instance.weapon.weaponName;
-        weaponDmg.text = "Damage: " + PlayerInfo.instance.weapon.damage;
-        weaponAtkSpeed.text = "Atk speed: " + PlayerInfo.instance.weapon.atkRate.ToString();        
+        weaponName.text = "Weapon: " + PlayerInfo.instance.weapon.GetName();
+        weaponDmg.text = "Damage: " + PlayerInfo.instance.weapon.GetDamage();
+        weaponAtkSpeed.text = "Atk speed: " + PlayerInfo.instance.weapon.GetAttackRate().ToString();        
     }
 
     void UpdateArmorTexts()
@@ -145,6 +151,11 @@ public class Town : MonoBehaviour {
     public void GoBackToMenu()
     {        
         GameManager.instance.MainMenu();
+<<<<<<< HEAD
+    }
+
+}
+=======
     }
 
     public void OpenShopCanvas()
@@ -160,3 +171,4 @@ public class Town : MonoBehaviour {
     }
 
 }
+>>>>>>> 8a6c5f2dcbec6d5e824cc31214a93ee0d486a33f
