@@ -43,17 +43,8 @@ public class GameManager : MonoBehaviour {
 
         if(loadItemsXML)
         {
-            itemsCollection = ItemContainer.Load(Path.Combine(Application.dataPath, "Scripts/Items/items.xml"));
+            itemsCollection = ItemContainer.Load();
             loadItemsXML = false;
-
-            /*foreach (BaseItem item in itemsCollection.items)
-            {
-                print("--- ID: " + item.itemID + "---");
-                print(item.name);
-                print(item.spriteIndex);
-                print(item.price);
-                print(item.type);
-            }*/
         }
 
         SceneManager.LoadScene("Town");
