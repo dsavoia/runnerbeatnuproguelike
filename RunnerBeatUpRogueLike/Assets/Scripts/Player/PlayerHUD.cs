@@ -9,7 +9,7 @@ public class PlayerHUD : MonoBehaviour {
     public Text experience;
 
     public Image healthBar;
-    public Text healthQty;   
+    public Text healthQty;
 
     void Start()
     {

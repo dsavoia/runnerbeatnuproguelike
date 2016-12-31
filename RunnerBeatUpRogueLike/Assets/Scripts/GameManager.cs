@@ -14,7 +14,10 @@ public class GameManager : MonoBehaviour {
 
     public GameObject[] weapons;
     public GameObject[] armors;
-    
+
+    public ItemContainer itemsCollection;
+    bool loadItemsXML = true;
+
     void Awake()
     {
         if (instance == null)
@@ -37,6 +40,22 @@ public class GameManager : MonoBehaviour {
     public void LoadTown()
     {        
         SaveGame();
+
+        if(loadItemsXML)
+        {
+            itemsCollection = ItemContainer.Load(Path.Combine(Application.dataPath, "Scripts/Items/items.xml"));
+            loadItemsXML = false;
+
+            /*foreach (BaseItem item in itemsCollection.items)
+            {
+                print("--- ID: " + item.itemID + "---");
+                print(item.name);
+                print(item.spriteIndex);
+                print(item.price);
+                print(item.type);
+            }*/
+        }
+
         SceneManager.LoadScene("Town");
     }
 

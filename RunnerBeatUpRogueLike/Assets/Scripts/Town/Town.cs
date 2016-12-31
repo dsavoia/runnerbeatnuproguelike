@@ -26,6 +26,9 @@ public class Town : MonoBehaviour {
 
     public GameObject buttonUpParent;
 
+    public GameObject townCanvas;
+    public GameObject shopCanvas;
+
 
     // Use this for initialization
     void Start ()
@@ -34,6 +37,8 @@ public class Town : MonoBehaviour {
         PlayerInfo.instance.CalculateNextLevelExperience();
         LoadFieldsData();
         CheckIfPointsToSpend();
+        townCanvas.SetActive(true);
+        shopCanvas.SetActive(false);
     }
 	
 	// Update is called once per frame
@@ -140,6 +145,18 @@ public class Town : MonoBehaviour {
     public void GoBackToMenu()
     {        
         GameManager.instance.MainMenu();
+    }
+
+    public void OpenShopCanvas()
+    {
+        townCanvas.SetActive(false);
+        shopCanvas.SetActive(true);
+    }
+
+    public void OpenTownCanvas()
+    {
+        townCanvas.SetActive(true);
+        shopCanvas.SetActive(false);
     }
 
 }
