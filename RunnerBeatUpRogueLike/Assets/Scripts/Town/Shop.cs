@@ -33,6 +33,6 @@ public class Shop : MonoBehaviour {
             shopItem.transform.localScale = new Vector3(1,1,1);
         }
 
-        print("Shop Loaded");
+        //print("Shop Loaded");
     }
 }
