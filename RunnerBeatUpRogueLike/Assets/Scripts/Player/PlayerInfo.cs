@@ -31,6 +31,8 @@ public class PlayerInfo : MonoBehaviour{
 
         public int equipedWeaponIndex;
         public int equipedArmorIndex;
+
+        public int[] inventory;
     }
 
     public int expToNextLevel;

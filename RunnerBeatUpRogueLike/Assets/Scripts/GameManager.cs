@@ -112,6 +112,8 @@ public class GameManager : MonoBehaviour {
         PlayerInfo.instance.playerAttributes.equipedWeaponIndex = gameData.equipedWeaponIndex;
         PlayerInfo.instance.playerAttributes.equipedArmorIndex = gameData.equipedArmorIndex;
 
+        PlayerInfo.instance.playerAttributes.inventory = gameData.inventory;
+
         PlayerInfo.instance.SetWeaponScript();
         PlayerInfo.instance.SetArmorScript();
 
@@ -152,4 +154,6 @@ public class GameData
 
     public int equipedWeaponIndex;
     public int equipedArmorIndex;
+
+    public int[] inventory;
 }
