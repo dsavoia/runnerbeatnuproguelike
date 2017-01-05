@@ -5,43 +5,67 @@
 			<name>Wooden Club</name>
 			<spriteIndex>0</spriteIndex>
 			<price>0</price>
-			<type>weapon</type>
+			<type>0</type>
  		</Item> 		
 		<Item ID="1">
 			<name>Short Sword</name>
 			<spriteIndex>1</spriteIndex>
 			<price>120</price>
-			<type>weapon</type>
+			<type>0</type>
  		</Item> 		
 		<Item ID="2">
 			<name>Iron Sword</name>
 			<spriteIndex>2</spriteIndex>
 			<price>350</price>
-			<type>weapon</type>
+			<type>0</type>
  		</Item> 
 		<Item ID="3">
 			<name>Flame Dagger</name>
 			<spriteIndex>3</spriteIndex>
 			<price>860</price>
-			<type>weapon</type>
+			<type>0</type>
  		</Item>
 		<Item ID="4">
 			<name>Ice Short Sword</name>
 			<spriteIndex>4</spriteIndex>
 			<price>1350</price>
-			<type>weapon</type>
+			<type>0</type>
  		</Item>
 		<Item ID="5">
 			<name>Diamond Sword</name>
 			<spriteIndex>5</spriteIndex>
 			<price>3580</price>
-			<type>weapon</type>
+			<type>0</type>
  		</Item>   
 		<Item ID="6">
 			<name>Thunder Diamond Sword</name>
 			<spriteIndex>6</spriteIndex>
 			<price>8600</price>
-			<type>weapon</type>
+			<type>0</type>
  		</Item>
+    <Item ID="7">
+			<name>Speed Potion</name>
+			<spriteIndex>0</spriteIndex>
+			<price>5000</price>
+			<type>1</type>
+ 		</Item>
+    <Item ID="8">
+      <name>Strength Potion</name>
+      <spriteIndex>1</spriteIndex>
+      <price>5000</price>
+      <type>1</type>
+    </Item>
+    <Item ID="9">
+      <name>Endurance Potion</name>
+      <spriteIndex>2</spriteIndex>
+      <price>5000</price>
+      <type>1</type>
+    </Item>
+    <Item ID="10">
+      <name>Health Potion</name>
+      <spriteIndex>3</spriteIndex>
+      <price>5000</price>
+      <type>1</type>
+    </Item>
  	</Items>
  </ItemCollection>

@@ -29,7 +29,7 @@ public class PlayerInfo : MonoBehaviour{
         public int townDefCap;
         public int townChanceToKill;
 
-        public int equipedWeaponIndex;       
+        public int equipedWeaponID;       
 
         public List<int> inventory;
     }
@@ -60,9 +60,8 @@ public class PlayerInfo : MonoBehaviour{
     public float speed;    
     public bool facingRight = true;
     public float distanceWalked = 0;
-
-    public BasicWeapon weapon;
-    public BaseArmor armor;
+        
+    public BasicWeapon weapon;   
 
     public int goldEarned = 0;    
     public int maxEnemiesInTown;
@@ -134,16 +133,16 @@ public class PlayerInfo : MonoBehaviour{
         playerAttributes.agility = 1;
 
         //TODO: REMOVE THIS VALUE. FOR TEST ONLY
-        playerAttributes.gold = 1000;
+        playerAttributes.gold = 99999;
 
         playerAttributes.townLevel = 1;
         playerAttributes.townDefCap = 3;
         playerAttributes.townChanceToKill = 0;
 
-        playerAttributes.equipedWeaponIndex = 0;
+        playerAttributes.equipedWeaponID = 0;
 
         playerAttributes.inventory = new List<int>();        
-        playerAttributes.inventory.Add(playerAttributes.equipedWeaponIndex);
+        playerAttributes.inventory.Add(playerAttributes.equipedWeaponID);
 
         SetWeaponScript();      
         CalculateNewHealthValue();
@@ -282,6 +281,6 @@ public class PlayerInfo : MonoBehaviour{
 
     public void SetWeaponScript()
     {
-        weapon = GameManager.instance.weapons[playerAttributes.equipedWeaponIndex].GetComponent<BasicWeapon>();        
+        weapon = GameManager.instance.weapons[playerAttributes.equipedWeaponID].GetComponent<BasicWeapon>();        
     }    
 }

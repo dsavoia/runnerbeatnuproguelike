@@ -8,5 +8,5 @@ public class BaseItem
     public string name;
     public int spriteIndex;
     public int price;
-    public string type;
+    public int type;
 }

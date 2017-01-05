@@ -12,13 +12,10 @@ public class GameManager : MonoBehaviour {
         
     public string saveFileName = "RunnerRogueLikeBeatEmUp";
 
-    public GameObject[] weapons;
-    public GameObject[] armors;
+    public GameObject[] weapons;    
 
     public ItemContainer itemsCollection;
-    bool loadItemsXML = true;
-
-    public GameObject clickedButton = null;
+    bool loadItemsXML = true; 
 
     void Awake()
     {
@@ -83,7 +80,7 @@ public class GameManager : MonoBehaviour {
         gameData.townDefCap = PlayerInfo.instance.playerAttributes.townDefCap;
         gameData.townChanceToKill = PlayerInfo.instance.playerAttributes.townChanceToKill;
 
-        gameData.equipedWeaponIndex = PlayerInfo.instance.playerAttributes.equipedWeaponIndex;
+        gameData.equipedWeaponID = PlayerInfo.instance.playerAttributes.equipedWeaponID;
         gameData.inventory = new int[PlayerInfo.instance.playerAttributes.inventory.Count];
 
         for (int i = 0; i < PlayerInfo.instance.playerAttributes.inventory.Count; i++)
@@ -116,7 +113,7 @@ public class GameManager : MonoBehaviour {
         PlayerInfo.instance.playerAttributes.townDefCap = gameData.townDefCap;
         PlayerInfo.instance.playerAttributes.townChanceToKill = gameData.townChanceToKill;
 
-        PlayerInfo.instance.playerAttributes.equipedWeaponIndex = gameData.equipedWeaponIndex;
+        PlayerInfo.instance.playerAttributes.equipedWeaponID = gameData.equipedWeaponID;
 
         PlayerInfo.instance.playerAttributes.inventory = new List<int>();
 
@@ -161,7 +158,7 @@ public class GameData
     public int townDefCap;
     public int townChanceToKill;
 
-    public int equipedWeaponIndex;    
+    public int equipedWeaponID;    
 
     public int[] inventory;
 }

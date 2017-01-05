@@ -5,107 +5,186 @@ using UnityEngine.UI;
 
 public class Shop : MonoBehaviour
 {
-
     public GameObject weaponShopContent;
-    public GameObject shopItemPrefab;
-    public List<GameObject> shopItemList;
+    public GameObject weaponItemPrefab;   
 
     public GameObject consumableShopContent;
-    public GameObject consumableItemPrefab;
-    public List<GameObject> consumableItemList;
+    public GameObject consumableItemPrefab;    
 
     public GameObject inventoryShopContent;
-    public GameObject inventoryItemPrefab;
-    public List<GameObject> inventoryItemList;
+    public GameObject inventoryItemPrefab;    
     public Text goldText;
-     
 
-    // Use this for initialization
+    Sprite[] weaponsSprite;
+    Sprite[] consumablesSprite;
+    List<BaseItem> itemsCol;
+
     void Start ()
-    {
-        BuildWeaponShop();
-        BuildConsumablesShop();
-        BuildInventory();
+    {        
+        weaponsSprite = Resources.LoadAll<Sprite>("WeaponsSprite");
+        consumablesSprite = Resources.LoadAll<Sprite>("ConsumablesSprite");        
+        itemsCol = GameManager.instance.itemsCollection.items;
+        BuildShop();
+        UpdatePlayerGold();
     }	
 
-    void BuildWeaponShop()
+    void BuildShop()
     {
-        Sprite[] itemsSprite;
-
-        itemsSprite = Resources.LoadAll<Sprite>("WeaponsSprite");
-
-        ShopItem shopItemScript;
-
-        List<BaseItem> storeItems = GameManager.instance.itemsCollection.items;
-
-        for (int i = 0; i < storeItems.Count; i++)
+        for (int i = 0; i < itemsCol.Count; i++)
         {
-            if (!PlayerInfo.instance.playerAttributes.inventory.Contains(storeItems[i].itemID))
+            if (itemsCol[i].type == 0) //TODO: Decide if it's ok to let this value hardcoded
             {
-                GameObject shopItem = Instantiate(shopItemPrefab);
+                if (!PlayerInfo.instance.playerAttributes.inventory.Contains(itemsCol[i].itemID))
+                {
+                    AddWeaponsShopItem(itemsCol[i]);
+                }
+            }
+            else if (itemsCol[i].type == 1)
+            {                
+                AddConsumableShopItem(itemsCol[i]);
+            }
 
-                shopItem.name = "shop item " + i;
-
-                shopItemScript = shopItem.GetComponent<ShopItem>();
-
-                shopItemScript.itemName = storeItems[i].name;
-                shopItemScript.itemNameText.text = storeItems[i].name;
-
-                shopItemScript.itemID = storeItems[i].itemID;
-
-                shopItemScript.price = storeItems[i].price;
-                shopItemScript.priceText.text = storeItems[i].price.ToString() + " gold";               
-
-                shopItemScript.icon.sprite = itemsSprite[storeItems[i].spriteIndex];                
-
-                AddListenerToShopButton(shopItemScript.GetComponentInChildren<Button>(), shopItem);
-
-                shopItem.transform.SetParent(weaponShopContent.transform);
-
-                shopItem.transform.position = new Vector3(weaponShopContent.transform.position.x,
-                    weaponShopContent.transform.position.y, weaponShopContent.transform.position.z);
-
-                shopItem.transform.localScale = new Vector3(1, 1, 1);
-
-                shopItemList.Add(shopItem);
+            if (PlayerInfo.instance.playerAttributes.inventory.Contains(itemsCol[i].itemID))
+            {
+                AddInventoryShopItem(itemsCol[i]);
             }
         }        
     }
 
-    void AddListenerToShopButton(Button button, GameObject shopItem)
+    void AddListenerToShopBuyButton(Button button, GameObject shopItem)
     {
         button.onClick.AddListener(() => BuyItem(shopItem));
     }
 
-    public void BuyItem(GameObject clickedButton)
-    {   
-        ShopItem selectedItemScript = clickedButton.GetComponent<ShopItem>();
+    void AddListenerToInventoryShopButton(Button button, GameObject shopItem)
+    {
+        button.onClick.AddListener(() => SellItem(shopItem));
+    }
 
-        //print("comprando " + selectedItemScript.itemName);
+    public void BuyItem(GameObject shopItem)
+    {   
+        ShopItem selectedItemScript = shopItem.GetComponent<ShopItem>();
 
         if (PlayerInfo.instance.playerAttributes.gold >= selectedItemScript.price)
         {
             PlayerInfo.instance.playerAttributes.gold -= selectedItemScript.price;
             PlayerInfo.instance.playerAttributes.inventory.Add(selectedItemScript.itemID);
 
-            shopItemList.Remove(clickedButton);
-            Destroy(clickedButton);
-            UpdatePlayerInventory();
+            UpdatePlayerGold();
+            AddInventoryShopItem(itemsCol.Find(x => x.itemID == selectedItemScript.itemID));
+            Destroy(shopItem);            
         }
     }
 
-    void BuildConsumablesShop()
+    public void SellItem(GameObject shopItem)
     {
+        ShopItem selectedItemScript = shopItem.GetComponent<ShopItem>();
         
+        PlayerInfo.instance.playerAttributes.gold += selectedItemScript.price;
+        PlayerInfo.instance.playerAttributes.inventory.Remove(selectedItemScript.itemID);
+
+        print(selectedItemScript.type);
+
+        if (selectedItemScript.type == 0)
+        {
+            AddWeaponsShopItem(itemsCol.Find(x => x.itemID == selectedItemScript.itemID));
+        }
+        else if (selectedItemScript.type == 1)
+        {
+            AddConsumableShopItem(itemsCol.Find(x => x.itemID == selectedItemScript.itemID));
+        }
+
+        UpdatePlayerGold();
+        Destroy(shopItem);        
     }
 
-    void BuildInventory()
+    void AddWeaponsShopItem(BaseItem weapon)
     {
-        goldText.text = "Gold: " + PlayerInfo.instance.playerAttributes.gold.ToString();
+        ShopItem shopItemScript;
+        GameObject shopItem = Instantiate(weaponItemPrefab);
+        shopItem.name = "Weapon item " + weapon.name;
+        shopItemScript = shopItem.GetComponent<ShopItem>();
+        shopItemScript.itemName = weapon.name;
+        shopItemScript.itemNameText.text = weapon.name;
+        shopItemScript.itemID = weapon.itemID;
+        shopItemScript.price = weapon.price;
+        shopItemScript.type = weapon.type;
+        shopItemScript.priceText.text = shopItemScript.price.ToString() + " gold";
+        shopItemScript.icon.sprite = weaponsSprite[weapon.spriteIndex];
+        AddListenerToShopBuyButton(shopItemScript.GetComponentInChildren<Button>(), shopItem);
+        shopItem.transform.SetParent(weaponShopContent.transform);
+        shopItem.transform.position = new Vector3(weaponShopContent.transform.position.x,
+            weaponShopContent.transform.position.y, weaponShopContent.transform.position.z);
+        shopItem.transform.localScale = new Vector3(1, 1, 1);
     }
 
-    public void UpdatePlayerInventory()
+    void AddInventoryShopItem(BaseItem item)
     {
-        goldText.text = "Gold: " + PlayerInfo.instance.playerAttributes.gold.ToString();
+        ShopItem shopItemScript;
+        GameObject inventoryItem = Instantiate(inventoryItemPrefab);
+        Button button;
+
+        inventoryItem.name = "Inventory item " + item.name;
+        shopItemScript = inventoryItem.GetComponent<ShopItem>();
+        button = shopItemScript.GetComponentInChildren<Button>();
+        shopItemScript.itemName = item.name;
+        shopItemScript.itemNameText.text = item.name;
+        shopItemScript.itemID = item.itemID;
+        shopItemScript.type = item.type;
+        shopItemScript.price = Mathf.RoundToInt(item.price / 3);
+        shopItemScript.priceText.text = shopItemScript.price.ToString() + " gold";
+
+        if (item.type == 0)
+        {
+            shopItemScript.icon.sprite = weaponsSprite[item.spriteIndex];
+            if (PlayerInfo.instance.playerAttributes.equipedWeaponID == item.itemID)
+            {
+                button.interactable = false;
+                button.GetComponentInChildren<Text>().text = "Equiped";
+            }
+        }
+        else if (item.type == 1)
+        {
+            shopItemScript.icon.sprite = consumablesSprite[item.spriteIndex];
+        }
+
+        AddListenerToInventoryShopButton(button, inventoryItem);
+
+        inventoryItem.transform.SetParent(inventoryShopContent.transform);
+        inventoryItem.transform.position = new Vector3(inventoryShopContent.transform.position.x,
+            inventoryShopContent.transform.position.y, inventoryShopContent.transform.position.z);
+        inventoryItem.transform.localScale = new Vector3(1, 1, 1);
     }    
+
+    void AddConsumableShopItem(BaseItem consumable)
+    {
+        ShopItem shopItemScript;
+        GameObject consumableItem = Instantiate(consumableItemPrefab);
+        Button button;
+
+        consumableItem.name = "Consumable item " + consumable.name;
+        shopItemScript = consumableItem.GetComponent<ShopItem>();
+        button = shopItemScript.GetComponentInChildren<Button>();
+        shopItemScript.itemName = consumable.name;
+        shopItemScript.itemNameText.text = consumable.name;
+        shopItemScript.itemID = consumable.itemID;
+        shopItemScript.type = consumable.type;
+        shopItemScript.price = consumable.price;
+        shopItemScript.priceText.text = shopItemScript.price.ToString() + " gold";
+        
+        shopItemScript.icon.sprite = consumablesSprite[consumable.spriteIndex];
+
+        button.GetComponentInChildren<Text>().text = "Buy";
+        AddListenerToShopBuyButton(button, consumableItem);
+
+        consumableItem.transform.SetParent(consumableShopContent.transform);
+        consumableItem.transform.position = new Vector3(consumableShopContent.transform.position.x,
+            consumableShopContent.transform.position.y, consumableShopContent.transform.position.z);
+        consumableItem.transform.localScale = new Vector3(1, 1, 1);
+    }
+
+    void UpdatePlayerGold()
+    {
+        goldText.text = "Gold: " + PlayerInfo.instance.playerAttributes.gold.ToString();
+    }
 }

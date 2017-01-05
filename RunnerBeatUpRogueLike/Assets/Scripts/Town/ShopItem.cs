@@ -10,5 +10,6 @@ public class ShopItem : MonoBehaviour
     public int itemID;
     public string itemName;
     public int price;
+    public int type;
     public bool playerHasItem = false;    
 }
