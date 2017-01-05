@@ -23,8 +23,7 @@ public class PlayersHouse : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        LoadFieldsData();
-        print("Starting players House");
+        LoadFieldsData();           
     }
 	
 	// Update is called once per frame
@@ -75,7 +74,6 @@ public class PlayersHouse : MonoBehaviour {
                 PlayerInfo.instance.playerAttributes.endurance++;
                 PlayerInfo.instance.playerAttributes.pointsToSpend--;
                 PlayerInfo.instance.CalculateNewHealthValue();
-                PlayerInfo.instance.CalculateNewDmgReductionValue();
                 break;
             case (2):
                 PlayerInfo.instance.playerAttributes.agility++;

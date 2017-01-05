@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 
@@ -19,21 +18,21 @@ public class ItemContainer
         if (Application.platform == RuntimePlatform.Android)
         {
             // Android
-            string oriPath = System.IO.Path.Combine(Application.streamingAssetsPath, "items.xml");
+            string oriPath = Path.Combine(Application.streamingAssetsPath, "items.xml");
 
             // Android only use WWW to read file
             WWW reader = new WWW(oriPath);
             while (!reader.isDone) { }
 
             realPath = Application.persistentDataPath + "/db";
-            System.IO.File.WriteAllBytes(realPath, reader.bytes);
+            File.WriteAllBytes(realPath, reader.bytes);
 
             dbPath = realPath;
         }
         else
         {
             // iOS
-            dbPath = System.IO.Path.Combine(Application.streamingAssetsPath, "items.xml");
+            dbPath = Path.Combine(Application.streamingAssetsPath, "items.xml");
         }
 
         var serializer = new XmlSerializer(typeof(ItemContainer));

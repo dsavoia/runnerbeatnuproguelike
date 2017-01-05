@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour {
 
     public ItemContainer itemsCollection;
     bool loadItemsXML = true;
+
+    public GameObject clickedButton = null;
 
     void Awake()
     {
@@ -82,7 +84,12 @@ public class GameManager : MonoBehaviour {
         gameData.townChanceToKill = PlayerInfo.instance.playerAttributes.townChanceToKill;
 
         gameData.equipedWeaponIndex = PlayerInfo.instance.playerAttributes.equipedWeaponIndex;
-        gameData.equipedArmorIndex = PlayerInfo.instance.playerAttributes.equipedArmorIndex;
+        gameData.inventory = new int[PlayerInfo.instance.playerAttributes.inventory.Count];
+
+        for (int i = 0; i < PlayerInfo.instance.playerAttributes.inventory.Count; i++)
+        {
+            gameData.inventory[i] = PlayerInfo.instance.playerAttributes.inventory[i];
+        }       
 
         bf.Serialize(file, gameData);
         file.Close();
@@ -110,17 +117,19 @@ public class GameManager : MonoBehaviour {
         PlayerInfo.instance.playerAttributes.townChanceToKill = gameData.townChanceToKill;
 
         PlayerInfo.instance.playerAttributes.equipedWeaponIndex = gameData.equipedWeaponIndex;
-        PlayerInfo.instance.playerAttributes.equipedArmorIndex = gameData.equipedArmorIndex;
 
-        PlayerInfo.instance.playerAttributes.inventory = gameData.inventory;
+        PlayerInfo.instance.playerAttributes.inventory = new List<int>();
 
-        PlayerInfo.instance.SetWeaponScript();
-        PlayerInfo.instance.SetArmorScript();
+        foreach (int itemIndex in gameData.inventory)
+        {
+            PlayerInfo.instance.playerAttributes.inventory.Add(itemIndex);
+        }
+        
+        PlayerInfo.instance.SetWeaponScript();        
 
         PlayerInfo.instance.CalculateNewAtkValues();
         PlayerInfo.instance.CalculateNewAtkRateValue();
-        PlayerInfo.instance.CalculateNewMovSpeedValue();
-        PlayerInfo.instance.CalculateNewDmgReductionValue();
+        PlayerInfo.instance.CalculateNewMovSpeedValue();        
         PlayerInfo.instance.CalculateNewHealthValue();
 
         LoadTown();
@@ -152,8 +161,7 @@ public class GameData
     public int townDefCap;
     public int townChanceToKill;
 
-    public int equipedWeaponIndex;
-    public int equipedArmorIndex;
+    public int equipedWeaponIndex;    
 
     public int[] inventory;
 }

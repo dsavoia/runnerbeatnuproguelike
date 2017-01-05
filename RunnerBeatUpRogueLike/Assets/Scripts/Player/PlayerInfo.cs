@@ -29,10 +29,9 @@ public class PlayerInfo : MonoBehaviour{
         public int townDefCap;
         public int townChanceToKill;
 
-        public int equipedWeaponIndex;
-        public int equipedArmorIndex;
+        public int equipedWeaponIndex;       
 
-        public int[] inventory;
+        public List<int> inventory;
     }
 
     public int expToNextLevel;
@@ -133,22 +132,24 @@ public class PlayerInfo : MonoBehaviour{
         playerAttributes.strength = 1;
         playerAttributes.endurance = 1;
         playerAttributes.agility = 1;
-        playerAttributes.gold = 0;
+
+        //TODO: REMOVE THIS VALUE. FOR TEST ONLY
+        playerAttributes.gold = 1000;
 
         playerAttributes.townLevel = 1;
         playerAttributes.townDefCap = 3;
         playerAttributes.townChanceToKill = 0;
 
         playerAttributes.equipedWeaponIndex = 0;
-        playerAttributes.equipedArmorIndex = 0;
 
-        SetWeaponScript();
-        SetArmorScript();
+        playerAttributes.inventory = new List<int>();        
+        playerAttributes.inventory.Add(playerAttributes.equipedWeaponIndex);
+
+        SetWeaponScript();      
         CalculateNewHealthValue();
         CalculateNewAtkValues();
         CalculateNewAtkRateValue();
         CalculateNewMovSpeedValue();
-        CalculateNewDmgReductionValue();
 
         GameManager.instance.LoadTown();
     }
@@ -199,11 +200,6 @@ public class PlayerInfo : MonoBehaviour{
     }
 
     public void CalculateNewMovSpeedValue()
-    {
-
-    }
-
-    public void CalculateNewDmgReductionValue()
     {
 
     }
@@ -287,10 +283,5 @@ public class PlayerInfo : MonoBehaviour{
     public void SetWeaponScript()
     {
         weapon = GameManager.instance.weapons[playerAttributes.equipedWeaponIndex].GetComponent<BasicWeapon>();        
-    }
-
-    public void SetArmorScript()
-    {
-        armor = GameManager.instance.armors[playerAttributes.equipedArmorIndex].GetComponent<BaseArmor>();
-    }
+    }    
 }

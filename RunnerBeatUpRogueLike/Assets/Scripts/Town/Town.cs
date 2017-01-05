@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class Town : MonoBehaviour {
     
     [SerializeField]
-    public enum CanvasState
+    public enum TownState
     {
         Town = 0,
         PlayersHouse = 1,
@@ -18,19 +18,21 @@ public class Town : MonoBehaviour {
     public Text townChanceToKill;
     */
 
-    CanvasState canvasState;
+    public TownState townState;
 
     public GameObject townCanvas;
     public GameObject shopCanvas;
     public GameObject playersHouseCanvas;
     public GameObject townHallCanvas;
 
-
+    PlayersHouse playersHouse;
 
     // Use this for initialization
     void Start ()
     {
         PlayerInfo.instance.SetState(PlayerInfo.PlayerState.InTown);
+        playersHouse = GetComponent<PlayersHouse>();
+
         ChangeTownCanvas(0);
     }
     	
@@ -59,7 +61,7 @@ public class Town : MonoBehaviour {
 
     public void ChangeTownCanvas(int newCanvasState)
     {
-        canvasState = (CanvasState)newCanvasState;
+        townState = (TownState)newCanvasState;
         UpdateTownCanvas();
     }
 
@@ -70,18 +72,19 @@ public class Town : MonoBehaviour {
         shopCanvas.SetActive(false);
         townHallCanvas.SetActive(false);
 
-        switch(canvasState)
+        switch(townState)
         {
-            case (CanvasState.Town):
+            case (TownState.Town):
                 townCanvas.SetActive(true);
             break;
-            case (CanvasState.PlayersHouse):
+            case (TownState.PlayersHouse):
                 playersHouseCanvas.SetActive(true);
+                playersHouse.LoadFieldsData();
             break;
-            case (CanvasState.Shop):
+            case (TownState.Shop):
                 shopCanvas.SetActive(true);
             break;
-            case (CanvasState.TownHall):
+            case (TownState.TownHall):
                 townHallCanvas.SetActive(true);
             break;
         }
