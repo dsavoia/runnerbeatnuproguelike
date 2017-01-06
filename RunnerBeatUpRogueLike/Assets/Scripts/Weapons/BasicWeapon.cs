@@ -13,8 +13,11 @@ public class BasicWeapon : MonoBehaviour, IWeapon {
 
     List<IAttack> attacks = new List<IAttack>();
 
-    public BasicWeapon() {
-        AddAttack(new BasicAttack(baseDamage));
+    public void SetAttackDamage(int weaponDamage)
+    {
+        baseDamage = weaponDamage;
+        attacks = new List<IAttack>();
+        AddAttack(new BasicAttack(weaponDamage));
     }
 
     public string GetName(){

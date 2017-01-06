@@ -40,8 +40,11 @@ public class Shop : MonoBehaviour
                 }
             }
             else if (itemsCol[i].type == 1)
-            {                
-                AddConsumableShopItem(itemsCol[i]);
+            {
+                if (!PlayerInfo.instance.playerAttributes.inventory.Contains(itemsCol[i].itemID))
+                {
+                    AddConsumableShopItem(itemsCol[i]);
+                }
             }
 
             if (PlayerInfo.instance.playerAttributes.inventory.Contains(itemsCol[i].itemID))

@@ -32,8 +32,12 @@ This README would normally document whatever steps are necessary to get your app
 
 * 01 / 05 / 17
 
- - Now it is possible to buy items from the store, but the inventory is not updating yet. The changes were made mainly on Shop.cs
+ Now it is possible to buy items from the store, but the inventory is not updating yet. The changes were made mainly on Shop.cs
 
 * 01 / 05 / 17
 
- - Implemented the buy and sell mechanics for weapons, consumables and inventory items. The chances were mainly done inthe Shop.cs class and in the Town Scene.
+ Implemented the buy and sell mechanics for weapons, consumables and inventory items. The chances were mainly done inthe Shop.cs class and in the Town Scene.
+ 
+* 01 / 06/ 17
+
+Implemented player equipment and item equip.

@@ -41,9 +41,6 @@ public class PlayerActions : MonoBehaviour, ICombatTarget, IAttacker {
             //PlayerInfo.instance.focusedEnemy.TakeDamage(PlayerInfo.instance.attackDamage);            
             GetTarget().Defend(Attack());
             PlayerInfo.instance.lastAttackTime = Time.time;
-            
-
-
         }
     }    
 
@@ -66,7 +63,13 @@ public class PlayerActions : MonoBehaviour, ICombatTarget, IAttacker {
     {
         List<IAttack> attacks = new List<IAttack>();
         attacks.Add(PlayerInfo.instance.basicAttack);
-        attacks.AddRange(PlayerInfo.instance.weapon.Attack());
+
+        foreach (IAttack attack in PlayerInfo.instance.weapon.Attack())
+        {
+            attack.AddDamage(Mathf.RoundToInt(PlayerInfo.instance.basicAttack.GetDamage() / PlayerInfo.instance.weapon.Attack().Count));
+            attacks.Add(attack);
+        }
+        
         return attacks;
     }
 

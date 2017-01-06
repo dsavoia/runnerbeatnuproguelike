@@ -1,7 +1,7 @@
 ﻿public interface IAttack
 {
     int GetDamage();
-    void SetDamage(int damage);
+    void AddDamage(int damage);
     AttackTypes GetAttackType();
     void SetAttackType(AttackTypes attack);
 }

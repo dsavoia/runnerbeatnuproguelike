@@ -5,7 +5,7 @@
     protected AttackTypes attackType = AttackTypes.Basic;
 
     public BasicAttack(int damage = 0) {
-        SetDamage(damage);
+        AddDamage(damage);
     }
 
     public AttackTypes GetAttackType()
@@ -23,8 +23,8 @@
         this.attackType = attack;
     }
 
-    public void SetDamage(int damage)
+    public void AddDamage(int damage)
     {
-        this.damage = damage;
+        this.damage += damage;
     }
 }

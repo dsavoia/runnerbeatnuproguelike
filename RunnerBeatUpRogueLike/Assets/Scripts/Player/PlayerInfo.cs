@@ -10,7 +10,7 @@ public class PlayerInfo : MonoBehaviour{
         MovingToTarget,
         MovingToTown,
         Fighting,        
-        EnemiesAttackingTown,        
+        EnemiesAttackingTown,
         Dead,
         InTown
     }
@@ -59,9 +59,10 @@ public class PlayerInfo : MonoBehaviour{
     public int attackDamage;
     public float speed;    
     public bool facingRight = true;
-    public float distanceWalked = 0;
-        
-    public BasicWeapon weapon;   
+    public float distanceWalked = 0;        
+    
+    public GameObject weaponGO;
+    public BasicWeapon weapon;
 
     public int goldEarned = 0;    
     public int maxEnemiesInTown;
@@ -72,6 +73,8 @@ public class PlayerInfo : MonoBehaviour{
     public Transform townPos;
 
     public PlayerState state;
+
+    List<BaseItem> itemsCol;
 
     void Awake()
     {
@@ -90,7 +93,9 @@ public class PlayerInfo : MonoBehaviour{
     void Start()
     {        
         EventManager.onEnemyDeath += EnemyDied;
-        EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;        
+        EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;
+        itemsCol = GameManager.instance.itemsCollection.items;
+        weapon = weaponGO.GetComponent<BasicWeapon>();
     }
 
     void OnDisable()
@@ -143,11 +148,9 @@ public class PlayerInfo : MonoBehaviour{
 
         playerAttributes.inventory = new List<int>();        
         playerAttributes.inventory.Add(playerAttributes.equipedWeaponID);
-
-        SetWeaponScript();      
+        
         CalculateNewHealthValue();
-        CalculateNewAtkValues();
-        CalculateNewAtkRateValue();
+        EquipWeapon(playerAttributes.equipedWeaponID);        
         CalculateNewMovSpeedValue();
 
         GameManager.instance.LoadTown();
@@ -181,16 +184,25 @@ public class PlayerInfo : MonoBehaviour{
         maxHp = Mathf.RoundToInt(initialHealthValue + (playerAttributes.lv / 2) + playerAttributes.endurance);
     }
 
+    public void EquipWeapon(int weaponID)
+    {
+        playerAttributes.equipedWeaponID = weaponID;
+        BaseItem weaponItem = new BaseItem();
+        weaponItem = itemsCol.Find(w => w.itemID == weaponID);
+        weapon.SetAttackDamage(weaponItem.attackDamage);
+        weapon.SetAttackRate(weaponItem.attackRate);
+        weapon.SetName(weaponItem.name);
+        CalculateNewAtkValues();
+        CalculateNewAtkRateValue();
+    }
+
     public void CalculateNewAtkValues()
     {
         attackDamage = 0;
         basicAttack = new BasicAttack(Mathf.RoundToInt(playerAttributes.strength * 0.8f));
-        attackDamage += basicAttack.GetDamage();
-        if (weapon) {
-            attackDamage += Mathf.RoundToInt(weapon.GetDamage() * 0.8f); 
-        }
+        attackDamage += basicAttack.GetDamage();       
+        attackDamage += Mathf.RoundToInt(weapon.GetDamage() * 0.8f);       
         //attackDamage = Mathf.RoundToInt((playerAttributes.strength * 0.8f) + (weapon.GetDamage() * 0.8f));
-
     }    
 
     public void CalculateNewAtkRateValue()
@@ -277,10 +289,5 @@ public class PlayerInfo : MonoBehaviour{
         townPos = GameObject.Find("TownPos").transform;
         targetPos = townPos.position;
         state = PlayerState.MovingToTown;
-    }
-
-    public void SetWeaponScript()
-    {
-        weapon = GameManager.instance.weapons[playerAttributes.equipedWeaponID].GetComponent<BasicWeapon>();        
-    }    
+    }  
 }

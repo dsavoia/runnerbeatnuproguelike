@@ -8,5 +8,7 @@ public class BaseItem
     public string name;
     public int spriteIndex;
     public int price;
-    public int type;
+    public int attackDamage;
+    public float attackRate;
+    public int type;    
 }

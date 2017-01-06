@@ -12,8 +12,6 @@ public class GameManager : MonoBehaviour {
         
     public string saveFileName = "RunnerRogueLikeBeatEmUp";
 
-    public GameObject[] weapons;    
-
     public ItemContainer itemsCollection;
     bool loadItemsXML = true; 
 
@@ -29,6 +27,7 @@ public class GameManager : MonoBehaviour {
         }
 
         DontDestroyOnLoad(gameObject);
+        itemsCollection = ItemContainer.Load();
     }   
 
     public void StartNewGame()
@@ -41,8 +40,7 @@ public class GameManager : MonoBehaviour {
         SaveGame();
 
         if(loadItemsXML)
-        {
-            itemsCollection = ItemContainer.Load();
+        {            
             loadItemsXML = false;
         }
 
@@ -122,10 +120,7 @@ public class GameManager : MonoBehaviour {
             PlayerInfo.instance.playerAttributes.inventory.Add(itemIndex);
         }
         
-        PlayerInfo.instance.SetWeaponScript();        
-
-        PlayerInfo.instance.CalculateNewAtkValues();
-        PlayerInfo.instance.CalculateNewAtkRateValue();
+        PlayerInfo.instance.EquipWeapon(gameData.equipedWeaponID);        
         PlayerInfo.instance.CalculateNewMovSpeedValue();        
         PlayerInfo.instance.CalculateNewHealthValue();
 
