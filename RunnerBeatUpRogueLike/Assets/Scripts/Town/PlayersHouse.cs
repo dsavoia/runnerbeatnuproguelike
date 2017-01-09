@@ -38,11 +38,6 @@ public class PlayersHouse : MonoBehaviour {
         LoadFieldsData();
     }
 
-    // Update is called once per frame
-    void Update() {
-
-    }
-
     public void LoadFieldsData()
     {
         lv.text = "Level: " + PlayerInfo.instance.playerAttributes.lv.ToString();

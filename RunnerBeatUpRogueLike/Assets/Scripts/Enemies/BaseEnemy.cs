@@ -92,29 +92,32 @@ public class BaseEnemy : MonoBehaviour, IAttacker, ICombatTarget
 
     protected virtual void Update ()
     {
-        enemyBounds = enemyBoxCollider2D.bounds;
-        enemyBounds.Expand(boundsOffset);
-        //DrawBoundsRect(); // debug Rect  
-
-        switch (state)
+        if (!GameManager.instance.isPaused)
         {
-            case (BaseEnemyState.Moving):
-                Move(new Vector2(transform.position.x + Vector2.left.x, transform.position.y));
-                LookForPlayer();
-            break;
-            case (BaseEnemyState.MovingToPlayer):
-                MoveToPlayer();
-            break;
-            case (BaseEnemyState.Fighting):
-                Fight();
-            break;
-            case (BaseEnemyState.PlayerDied):
-                state = BaseEnemyState.Celebrating;
-                SetFocus(false);
-                Celebrate();
-            break;
+            enemyBounds = enemyBoxCollider2D.bounds;
+            enemyBounds.Expand(boundsOffset);
+            //DrawBoundsRect(); // debug Rect  
 
-        }       
+            switch (state)
+            {
+                case (BaseEnemyState.Moving):
+                    Move(new Vector2(transform.position.x + Vector2.left.x, transform.position.y));
+                    LookForPlayer();
+                    break;
+                case (BaseEnemyState.MovingToPlayer):
+                    MoveToPlayer();
+                    break;
+                case (BaseEnemyState.Fighting):
+                    Fight();
+                    break;
+                case (BaseEnemyState.PlayerDied):
+                    state = BaseEnemyState.Celebrating;
+                    SetFocus(false);
+                    Celebrate();
+                    break;
+
+            }
+        }
 	}
 
     void LateUpdate()

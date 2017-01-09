@@ -24,16 +24,19 @@ public class ScenarioParallax : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        /*bool moving = false;
-
-        if(PlayerInfo.instance.state == PlayerInfo.PlayerState.MovingToPosition || PlayerInfo.instance.state == PlayerInfo.PlayerState.MovingForward)
+        if (!GameManager.instance.isPaused)
         {
-            moving = true;
-        }*/
+            /*bool moving = false;
 
-        float xOffset = moveWithPlayer? ((PlayerInfo.instance.state == PlayerInfo.PlayerState.MovingForward && PlayerInfo.instance.facingRight)? speedFactor/divFactor * Time.deltaTime : 0) : speedFactor/divFactor * Time.deltaTime;
+            if(PlayerInfo.instance.state == PlayerInfo.PlayerState.MovingToPosition || PlayerInfo.instance.state == PlayerInfo.PlayerState.MovingForward)
+            {
+                moving = true;
+            }*/
 
-        bgMaterial.mainTextureOffset = new Vector2(bgMaterial.mainTextureOffset.x + xOffset, bgMaterial.mainTextureOffset.y);
+            float xOffset = moveWithPlayer ? ((PlayerInfo.instance.state == PlayerInfo.PlayerState.MovingForward && PlayerInfo.instance.facingRight) ? speedFactor / divFactor * Time.deltaTime : 0) : speedFactor / divFactor * Time.deltaTime;
+
+            bgMaterial.mainTextureOffset = new Vector2(bgMaterial.mainTextureOffset.x + xOffset, bgMaterial.mainTextureOffset.y);
+        }
 
 	}
 }

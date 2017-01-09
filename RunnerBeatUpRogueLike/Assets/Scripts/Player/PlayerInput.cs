@@ -6,15 +6,18 @@ public class PlayerInput : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
-        switch (PlayerInfo.instance.state)
+        if (!GameManager.instance.isPaused)
         {
-            case PlayerInfo.PlayerState.Dead:
-            case PlayerInfo.PlayerState.MovingToTown:
-            case PlayerInfo.PlayerState.EnemiesAttackingTown:
-                break;
-            default:
-                CheckClickOnScreen();
-            break;
+            switch (PlayerInfo.instance.state)
+            {
+                case PlayerInfo.PlayerState.Dead:
+                case PlayerInfo.PlayerState.MovingToTown:
+                case PlayerInfo.PlayerState.EnemiesAttackingTown:
+                    break;
+                default:
+                    CheckClickOnScreen();
+                    break;
+            }
         }
 
     }

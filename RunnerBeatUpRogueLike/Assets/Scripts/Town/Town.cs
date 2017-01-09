@@ -34,20 +34,7 @@ public class Town : MonoBehaviour {
         playersHouse = GetComponent<PlayersHouse>();
 
         ChangeTownCanvas(0);
-    }
-    	
-	void Update ()
-    {
-	
-	}
-
-    /*
-    void UpdateTownTexts()
-    {
-        townLv.text = "Town Lv: " + PlayerInfo.instance.playerAttributes.townLevel.ToString();
-        townDefCap.text = "Def Cap: " + PlayerInfo.instance.playerAttributes.townDefCap.ToString();
-        townChanceToKill.text = "Chance to Kill: " + PlayerInfo.instance.playerAttributes.townChanceToKill.ToString();
-    }*/
+    }  
 
     public void AttackTheEnemies()
     {

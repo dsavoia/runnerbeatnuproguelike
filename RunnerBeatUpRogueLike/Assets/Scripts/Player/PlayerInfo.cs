@@ -106,8 +106,11 @@ public class PlayerInfo : MonoBehaviour{
         
     void Update()
     {
-        UpdateDistance();
-        CheckGoBackToTown();
+        if (!GameManager.instance.isPaused)
+        {
+            UpdateDistance();
+            CheckGoBackToTown();
+        }
     }
 
     public void StartAttack()

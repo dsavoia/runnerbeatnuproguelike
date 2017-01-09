@@ -7,24 +7,27 @@ public class PlayerMovement : MonoBehaviour {
 	
 	void Update ()
     {
-        switch (PlayerInfo.instance.state)
+        if (!GameManager.instance.isPaused)
         {
-            case (PlayerInfo.PlayerState.MovingToPosition):
-            case (PlayerInfo.PlayerState.MovingToTown):
-                Move();
-            break;
+            switch (PlayerInfo.instance.state)
+            {
+                case (PlayerInfo.PlayerState.MovingToPosition):
+                case (PlayerInfo.PlayerState.MovingToTown):
+                    Move();
+                    break;
 
-            case (PlayerInfo.PlayerState.MovingForward):
-                if (!PlayerInfo.instance.facingRight)
-                {
-                    PlayerInfo.instance.facingRight = true;
-                }
-            break;
+                case (PlayerInfo.PlayerState.MovingForward):
+                    if (!PlayerInfo.instance.facingRight)
+                    {
+                        PlayerInfo.instance.facingRight = true;
+                    }
+                    break;
 
-            case (PlayerInfo.PlayerState.MovingToTarget):
-                MoveToTarget();
-            break;
+                case (PlayerInfo.PlayerState.MovingToTarget):
+                    MoveToTarget();
+                    break;
 
+            }
         }
     }
 

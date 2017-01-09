@@ -14,11 +14,14 @@ public class PlayerActions : MonoBehaviour, ICombatTarget, IAttacker {
 
     void Update()
     {
-        switch (PlayerInfo.instance.state)
+        if (!GameManager.instance.isPaused)
         {
-            case (PlayerInfo.PlayerState.Fighting):
-                Fight();
-            break;
+            switch (PlayerInfo.instance.state)
+            {
+                case (PlayerInfo.PlayerState.Fighting):
+                    Fight();
+                    break;
+            }
         }
     }
 

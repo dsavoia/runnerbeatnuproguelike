@@ -8,9 +8,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public class GameManager : MonoBehaviour {
 
-    public static GameManager instance = null;
-        
+    public static GameManager instance = null;        
     public string saveFileName = "RunnerRogueLikeBeatEmUp";
+    public bool isPaused = false;
 
     public ItemContainer itemsCollection;
     bool loadItemsXML = true; 
@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour {
     public void LoadTown()
     {        
         SaveGame();
+        isPaused = false;
 
         if(loadItemsXML)
         {            
@@ -134,8 +135,7 @@ public class GameManager : MonoBehaviour {
         {
             File.Delete(Application.persistentDataPath + "/" + saveFileName + ".dat");
         }
-    }
-    
+    }    
 }
 
 [Serializable]
