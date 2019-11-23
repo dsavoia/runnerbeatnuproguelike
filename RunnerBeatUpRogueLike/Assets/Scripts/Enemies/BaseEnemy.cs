@@ -71,7 +71,7 @@ public class BaseEnemy : MonoBehaviour, IAttacker, ICombatTarget
         pathArea = GameObject.FindGameObjectWithTag("Path").GetComponent<BoxCollider2D>();
         EventManager.onPlayerDeath += PlayerDied;
         EventManager.onEnemyArrivedInTown += AllyArrivedInTown;
-        EventManager.onEnemiesAttakingTown += PlayerDied;
+        EventManager.onEnemiesAttackingTown += PlayerDied;
                
         currentHp = maxHp;
 
@@ -87,7 +87,7 @@ public class BaseEnemy : MonoBehaviour, IAttacker, ICombatTarget
     {
         EventManager.onPlayerDeath -= PlayerDied;
         EventManager.onEnemyArrivedInTown -= AllyArrivedInTown;
-        EventManager.onEnemiesAttakingTown -= PlayerDied;
+        EventManager.onEnemiesAttackingTown -= PlayerDied;
     }
 
     protected virtual void Update ()

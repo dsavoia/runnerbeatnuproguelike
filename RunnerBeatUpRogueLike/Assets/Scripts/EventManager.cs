@@ -10,7 +10,7 @@ public class EventManager : MonoBehaviour
     public static event EnemyArrivedInTown onEnemyArrivedInTown;
 
     public delegate void EnemiesAttakingTown();
-    public static event EnemiesAttakingTown onEnemiesAttakingTown;
+    public static event EnemiesAttakingTown onEnemiesAttackingTown;
 
     public delegate void PlayerDied();
     public static event PlayerDied onPlayerDeath;
@@ -23,7 +23,7 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public static void OnEnemyArrivedOnTown(BaseEnemy enemy)
+    public static void OnEnemyArrivedInTown(BaseEnemy enemy)
     {
         if (onEnemyArrivedInTown != null)
         {
@@ -31,11 +31,11 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public static void OnEnemiesAttakingTown()
+    public static void OnEnemiesAttackingTown()
     {
-        if (onEnemiesAttakingTown != null)
+        if (onEnemiesAttackingTown != null)
         {
-            onEnemiesAttakingTown();
+            onEnemiesAttackingTown();
         }
     }
 
@@ -45,7 +45,5 @@ public class EventManager : MonoBehaviour
         {
             onPlayerDeath();
         }
-    }
-
-    
+    }    
 }

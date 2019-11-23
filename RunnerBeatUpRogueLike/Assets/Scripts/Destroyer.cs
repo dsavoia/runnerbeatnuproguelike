@@ -12,7 +12,7 @@ public class Destroyer : MonoBehaviour {
 
     void PutEnemyOnTown(BaseEnemy enemy)
     {
-        EventManager.OnEnemyArrivedOnTown(enemy);
+        EventManager.OnEnemyArrivedInTown(enemy);
         Destroy(enemy.gameObject);
     }    
 }

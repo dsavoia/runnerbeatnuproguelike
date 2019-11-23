@@ -21,14 +21,14 @@ public class EnemySpawner : MonoBehaviour {
     {        
         EventManager.onEnemyDeath += EnemyDied;
         EventManager.onEnemyArrivedInTown += EnemyArrivedInTown;
-        EventManager.onEnemiesAttakingTown += EnemiesAttackingTown;
+        EventManager.onEnemiesAttackingTown += EnemiesAttackingTown;
     }
 
     void OnDisable()
     {
         EventManager.onEnemyDeath -= EnemyDied;
         EventManager.onEnemyArrivedInTown -= EnemyArrivedInTown;
-        EventManager.onEnemiesAttakingTown -= EnemiesAttackingTown;
+        EventManager.onEnemiesAttackingTown -= EnemiesAttackingTown;
     }
 
     // Update is called once per frame

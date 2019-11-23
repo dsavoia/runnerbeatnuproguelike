@@ -265,7 +265,7 @@ public class PlayerInfo : MonoBehaviour{
 
         if (enemiesInTown >= maxEnemiesInTown)
         {
-            EventManager.OnEnemiesAttakingTown();
+            EventManager.OnEnemiesAttackingTown();
             focusedEnemy = null;
             state = PlayerState.EnemiesAttackingTown;
         }
